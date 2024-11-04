@@ -46,35 +46,35 @@
             // 
             // Slider
             // 
-            Slider.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             Slider.AutoSize = false;
+            Slider.Dock = DockStyle.Bottom;
             Slider.LargeChange = 1;
             Slider.Location = new Point(0, 18);
             Slider.Name = "Slider";
-            Slider.Size = new Size(180, 40);
+            Slider.Size = new Size(168, 27);
             Slider.TabIndex = 1;
             Slider.TickStyle = TickStyle.None;
             Slider.Scroll += Slider_Scroll;
             // 
             // SliderValue
             // 
-            SliderValue.AutoSize = true;
             SliderValue.Dock = DockStyle.Right;
-            SliderValue.Location = new Point(175, 15);
+            SliderValue.Location = new Point(168, 0);
             SliderValue.Margin = new Padding(0);
             SliderValue.Name = "SliderValue";
-            SliderValue.Size = new Size(25, 15);
+            SliderValue.Size = new Size(32, 45);
             SliderValue.TabIndex = 2;
-            SliderValue.Text = "100";
+            SliderValue.Text = "0.00";
+            SliderValue.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // CustomSilder
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.Control;
-            Controls.Add(SliderValue);
-            Controls.Add(Slider);
             Controls.Add(SliderName);
+            Controls.Add(Slider);
+            Controls.Add(SliderValue);
             Name = "CustomSilder";
             Size = new Size(200, 45);
             ((System.ComponentModel.ISupportInitialize)Slider).EndInit();

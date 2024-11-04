@@ -30,7 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Editor));
             panel1 = new Panel();
-            canvas1 = new GK1_PolygonEditor.Canvas();
+            renderCanvas = new GK1_PolygonEditor.Canvas();
             flowLayoutPanel1 = new FlowLayoutPanel();
             groupBox1 = new GroupBox();
             flowLayoutPanel2 = new FlowLayoutPanel();
@@ -63,23 +63,24 @@
             // 
             // panel1
             // 
-            panel1.Controls.Add(canvas1);
+            panel1.AutoSize = true;
+            panel1.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            panel1.Controls.Add(renderCanvas);
             panel1.Controls.Add(flowLayoutPanel1);
-            panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 0);
             panel1.Margin = new Padding(0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1158, 621);
+            panel1.Size = new Size(1070, 602);
             panel1.TabIndex = 0;
             // 
-            // canvas1
+            // renderCanvas
             // 
-            canvas1.Dock = DockStyle.Fill;
-            canvas1.Location = new Point(0, 0);
-            canvas1.Name = "canvas1";
-            canvas1.Size = new Size(949, 621);
-            canvas1.TabIndex = 1;
-            canvas1.Text = "canvas1";
+            renderCanvas.Location = new Point(0, 0);
+            renderCanvas.Margin = new Padding(0);
+            renderCanvas.Name = "renderCanvas";
+            renderCanvas.Size = new Size(858, 599);
+            renderCanvas.TabIndex = 1;
+            renderCanvas.Text = "canvas1";
             // 
             // flowLayoutPanel1
             // 
@@ -88,10 +89,10 @@
             flowLayoutPanel1.Controls.Add(groupBox1);
             flowLayoutPanel1.Controls.Add(groupBox2);
             flowLayoutPanel1.Controls.Add(groupBox3);
-            flowLayoutPanel1.Dock = DockStyle.Right;
-            flowLayoutPanel1.Location = new Point(949, 0);
+            flowLayoutPanel1.FlowDirection = FlowDirection.TopDown;
+            flowLayoutPanel1.Location = new Point(858, 0);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(209, 621);
+            flowLayoutPanel1.Size = new Size(209, 599);
             flowLayoutPanel1.TabIndex = 0;
             // 
             // groupBox1
@@ -281,7 +282,7 @@
             groupBox3.Location = new Point(0, 407);
             groupBox3.Margin = new Padding(0, 0, 3, 0);
             groupBox3.Name = "groupBox3";
-            groupBox3.Size = new Size(206, 210);
+            groupBox3.Size = new Size(206, 192);
             groupBox3.TabIndex = 2;
             groupBox3.TabStop = false;
             groupBox3.Text = "Material";
@@ -298,7 +299,7 @@
             flowLayoutPanel4.FlowDirection = FlowDirection.TopDown;
             flowLayoutPanel4.Location = new Point(3, 19);
             flowLayoutPanel4.Name = "flowLayoutPanel4";
-            flowLayoutPanel4.Size = new Size(200, 188);
+            flowLayoutPanel4.Size = new Size(200, 170);
             flowLayoutPanel4.TabIndex = 0;
             // 
             // button2
@@ -316,7 +317,7 @@
             checkBox2.Location = new Point(5, 29);
             checkBox2.Margin = new Padding(5, 0, 0, 0);
             checkBox2.Name = "checkBox2";
-            checkBox2.Size = new Size(145, 19);
+            checkBox2.Size = new Size(144, 19);
             checkBox2.TabIndex = 6;
             checkBox2.Text = "Use texture as material";
             checkBox2.UseVisualStyleBackColor = true;
@@ -329,7 +330,8 @@
             texturePicker1.Location = new Point(0, 48);
             texturePicker1.Margin = new Padding(0);
             texturePicker1.Name = "texturePicker1";
-            texturePicker1.Size = new Size(200, 70);
+            texturePicker1.Padding = new Padding(3);
+            texturePicker1.Size = new Size(200, 61);
             texturePicker1.TabIndex = 7;
             // 
             // texturePicker2
@@ -337,23 +339,27 @@
             texturePicker2.ButtonText = "Choose normal map";
             texturePicker2.DefaultTexture = "brickwall_normal.jpg";
             texturePicker2.FilePath = null;
-            texturePicker2.Location = new Point(0, 118);
+            texturePicker2.Location = new Point(0, 109);
             texturePicker2.Margin = new Padding(0);
             texturePicker2.Name = "texturePicker2";
-            texturePicker2.Size = new Size(200, 70);
+            texturePicker2.Padding = new Padding(3);
+            texturePicker2.Size = new Size(200, 61);
             texturePicker2.TabIndex = 8;
             // 
-            // Form1
+            // Editor
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1158, 621);
+            AutoScaleDimensions = new SizeF(96F, 96F);
+            AutoScaleMode = AutoScaleMode.Dpi;
+            AutoSize = true;
+            AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            ClientSize = new Size(1417, 727);
             Controls.Add(panel1);
             FormBorderStyle = FormBorderStyle.FixedSingle;
             Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
-            Name = "Form1";
+            Name = "Editor";
             SizeGripStyle = SizeGripStyle.Hide;
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "Mesh Editor";
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
@@ -371,12 +377,13 @@
             flowLayoutPanel4.ResumeLayout(false);
             flowLayoutPanel4.PerformLayout();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
 
         private Panel panel1;
-        private GK1_PolygonEditor.Canvas canvas1;
+        private GK1_PolygonEditor.Canvas renderCanvas;
         private FlowLayoutPanel flowLayoutPanel1;
         private GroupBox groupBox1;
         private GroupBox groupBox2;
