@@ -15,10 +15,12 @@ namespace GK1_MeshEditor
         public Vector3 N { get; set; }
         public Vector2 UV { get; set; }
 
-        public Vertex(Vector3 position, Vector3 normal, Vector2 uv)
+        public Vertex(Vector3 p, Vector3 pu, Vector3 pv, Vector2 uv)
         {
-            P = position;
-            N = normal;
+            P = p;
+            Pu = pu;
+            Pv = pv;
+            N = Vector3.Cross(pu, pv);
             UV = uv;
         }
     }
