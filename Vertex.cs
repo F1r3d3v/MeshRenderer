@@ -20,7 +20,7 @@ namespace GK1_MeshEditor
             P = p;
             Pu = pu;
             Pv = pv;
-            N = Vector3.Cross(pu, pv);
+            N = Vector3.Normalize(Vector3.Cross(pu, pv));
             UV = uv;
         }
     }

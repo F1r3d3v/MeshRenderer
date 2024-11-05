@@ -23,7 +23,8 @@ namespace GK1_MeshEditor
             {
                 for (int j = 0; j <= subdivisions; j++)
                 {
-                    float u = i * step, v = j * step;
+                    float u = i * step;
+                    float v = j * step;
 
                     Vertices.Add(Projection(u, v));
                 }
@@ -45,10 +46,10 @@ namespace GK1_MeshEditor
         }
         public Vertex Projection(float u, float v)
         {
-            float[] bernU1 = Bernstein(4, u);
-            float[] bernU2 = Bernstein(3, u);
-            float[] bernV1 = Bernstein(4, v);
-            float[] bernV2 = Bernstein(3, v);
+            float[] bernU1 = Bernstein(3, u);
+            float[] bernU2 = Bernstein(2, u);
+            float[] bernV1 = Bernstein(3, v);
+            float[] bernV2 = Bernstein(2, v);
 
             Vector3 p = CalculatePosition(u, v, bernU1, bernV1);
             Vector3 pu = CalculatePu(u, v, bernU2, bernV1);
@@ -61,12 +62,13 @@ namespace GK1_MeshEditor
         private Vector3 CalculatePu(float u, float v, float[] bernU, float[] bernV)
         {
             Vector3 tangentU = Vector3.Zero;
-            for (int i = 0; i < 4; i++)
+
+            for (int i = 0; i < 3; i++)
             {
-                for (int j = 0; j <= 4; j++)
+                for (int j = 0; j <= 3; j++)
                 {
                     Vector3 diff = _controlPoints[i + 1, j] - _controlPoints[i, j];
-                    tangentU += 4 * diff * bernU[i] * bernV[j];
+                    tangentU += 3 * diff * bernU[i] * bernV[j];
                 }
             }
             return tangentU;
@@ -75,12 +77,12 @@ namespace GK1_MeshEditor
         {
             Vector3 tangentV = Vector3.Zero;
 
-            for (int i = 0; i <= 4; i++)
+            for (int i = 0; i <= 3; i++)
             {
-                for (int j = 0; j < 4; j++)
+                for (int j = 0; j < 3; j++)
                 {
                     Vector3 diff = _controlPoints[i, j + 1] - _controlPoints[i, j];
-                    tangentV += 4 * diff * bernU[i] * bernV[j];
+                    tangentV += 3 * diff * bernU[i] * bernV[j];
                 }
             }
             return tangentV;
@@ -90,9 +92,9 @@ namespace GK1_MeshEditor
         {
             Vector3 pos = Vector3.Zero;
 
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 3; i++)
             {
-                for (int j = 0; j < 4; j++)
+                for (int j = 0; j < 3; j++)
                 {
                     pos += _controlPoints[i, j] * bernU[i] * bernV[j];
                 }
