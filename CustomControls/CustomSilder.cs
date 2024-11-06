@@ -43,12 +43,12 @@ namespace GK1_MeshEditor.CustomControls
         [Category("Behavior")]
         public int Divider { get; set; } = 1;
 
+        public TrackBar TrackBar => Slider;
 
         public CustomSilder()
         {
             InitializeComponent();
+            SliderValue.DataBindings.Add(new Binding("Text", Slider, "Value"));
         }
-
-        public virtual void Slider_Scroll(object sender, EventArgs e) => SliderValue.Text = ((double)Value / Divider).ToString();
     }
 }

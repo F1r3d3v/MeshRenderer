@@ -9,9 +9,10 @@ namespace GK1_MeshEditor
 {
     internal class BezierSurface
     {
-        public Vector3[,] ControlPoints = new Vector3[4,4];
-        public Mesh? Mesh;
-
+        public Vector3[,] ControlPoints { get; set; } = new Vector3[4,4];
+        public Mesh? Mesh { get; set; }
+        public Color Color { get; set; }
+        public Texture? Texture { get; set; }
         public BezierSurface() { }
 
         public BezierSurface(Vector3[,] controlPoints)

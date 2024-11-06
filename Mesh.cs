@@ -65,7 +65,7 @@ namespace GK1_MeshEditor
 
             for (int i = 0; i < 3; i++)
             {
-                for (int j = 0; j <= 3; j++)
+                for (int j = 0; j < 4; j++)
                 {
                     Vector3 diff = _controlPoints[i + 1, j] - _controlPoints[i, j];
                     tangentU += 3 * diff * bernU[i] * bernV[j];
@@ -77,7 +77,7 @@ namespace GK1_MeshEditor
         {
             Vector3 tangentV = Vector3.Zero;
 
-            for (int i = 0; i <= 3; i++)
+            for (int i = 0; i < 4; i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
@@ -92,9 +92,9 @@ namespace GK1_MeshEditor
         {
             Vector3 pos = Vector3.Zero;
 
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 4; i++)
             {
-                for (int j = 0; j < 3; j++)
+                for (int j = 0; j < 4; j++)
                 {
                     pos += _controlPoints[i, j] * bernU[i] * bernV[j];
                 }

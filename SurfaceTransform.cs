@@ -8,35 +8,27 @@ using System.Threading.Tasks;
 
 namespace GK1_MeshEditor
 {
-    internal class MeshTransform
+    internal class SurfaceTransform
     {
-        private Mesh _mesh;
-        private Matrix4x4 _transform;
+        private BezierSurface _bezierSurface;
+        private Matrix4x4 _transform = Matrix4x4.Identity;
+        public List<(Vector3 origP, Vector3 origPu, Vector3 origPv, Vector3 origN)> OriginalVertexData = [];
+        public Vector3[,] OriginalControlPoints = new Vector3[4, 4];
 
-        public Mesh Mesh
+        public BezierSurface BezierSurface
         {
-            get { return _mesh; }
+            get { return _bezierSurface; }
             set
             {
-                _mesh = value;
-                _originalVertexData.Clear();
-                foreach (var vertex in _mesh.Vertices)
+                _bezierSurface = value;
+                Array.Copy(value.ControlPoints, OriginalControlPoints, 16);
+                OriginalVertexData.Clear();
+
+                if (_bezierSurface.Mesh == null) return;
+                foreach (var vertex in _bezierSurface.Mesh.Vertices)
                 {
-                    _originalVertexData.Add((vertex.P, vertex.Pu, vertex.Pv, vertex.N));
+                    OriginalVertexData.Add((vertex.P, vertex.Pu, vertex.Pv, vertex.N));
                 }
-            }
-        }
-
-        private List<(Vector3 origP, Vector3 origPu, Vector3 origPv, Vector3 origN)> _originalVertexData = [];
-
-        public MeshTransform(Mesh mesh)
-        {
-            _mesh = mesh;
-            _transform = Matrix4x4.Identity;
-
-            foreach (var vertex in _mesh.Vertices)
-            {
-                _originalVertexData.Add((vertex.P, vertex.Pu, vertex.Pv, vertex.N));
             }
         }
 
@@ -57,20 +49,30 @@ namespace GK1_MeshEditor
             Matrix4x4 rotationXMatrix = Matrix4x4.CreateRotationX(rx);
             Matrix4x4 rotationYMatrix = Matrix4x4.CreateRotationY(ry);
             Matrix4x4 rotationZMatrix = Matrix4x4.CreateRotationZ(rz);
-            Matrix4x4 temp = Matrix4x4.Identity;
 
-            temp = Matrix4x4.Multiply(temp, rotationXMatrix);
-            temp = Matrix4x4.Multiply(temp, rotationYMatrix);
+            Matrix4x4 temp = Matrix4x4.Identity;
+            temp = Matrix4x4.Multiply(rotationXMatrix, rotationYMatrix);
             temp = Matrix4x4.Multiply(temp, rotationZMatrix);
             _transform = Matrix4x4.Multiply(_transform, temp);
         }
 
         public void ApplyTransformations()
         {
-            for (int i = 0; i < _mesh.Vertices.Count; ++i)
+            for (int i = 0; i < _bezierSurface.ControlPoints.GetLength(0); i++)
             {
-                Vertex vertex = _mesh.Vertices[i];
-                var (originalPosition, originalPu, originalPv, originalN) = _originalVertexData[i];
+                for (int j = 0; j < _bezierSurface.ControlPoints.GetLength(1); j++)
+                {
+                    Vector3 originalPosition = OriginalControlPoints[i, j];
+                    Vector3 transformedPosition = Vector3.Transform(originalPosition, _transform);
+                    _bezierSurface.ControlPoints[i, j] = transformedPosition;
+                }
+            }
+
+            if (_bezierSurface.Mesh == null) return;
+            for (int i = 0; i < _bezierSurface.Mesh.Vertices.Count; ++i)
+            {
+                Vertex vertex = _bezierSurface.Mesh.Vertices[i];
+                var (originalPosition, originalPu, originalPv, originalN) = OriginalVertexData[i];
 
                 Vector3 transformedPosition = Vector3.Transform(originalPosition, _transform);
                 Vector3 transformedPu = Vector3.TransformNormal(originalPu, _transform);
@@ -82,6 +84,8 @@ namespace GK1_MeshEditor
                 vertex.Pv = Vector3.Normalize(transformedPv);
                 vertex.N = Vector3.Normalize(transformedN);
             }
+
+            ResetTransform();
         }
 
         public void ResetTransform()
@@ -89,12 +93,14 @@ namespace GK1_MeshEditor
             _transform = Matrix4x4.Identity;
         }
 
-        public void ResetVerticesToOriginal()
+        public void ResetSurfaceToOriginal()
         {
-            for (int i = 0; i < _mesh.Vertices.Count; ++i)
+            Array.Copy(OriginalControlPoints, _bezierSurface.ControlPoints, 16);
+            if (_bezierSurface.Mesh == null) return;
+            for (int i = 0; i < _bezierSurface.Mesh.Vertices.Count; ++i)
             {
-                Vertex vertex = _mesh.Vertices[i];
-                var (originalPosition, originalPu, originalPv, originalN) = _originalVertexData[i];
+                Vertex vertex = _bezierSurface.Mesh.Vertices[i];
+                var (originalPosition, originalPu, originalPv, originalN) = OriginalVertexData[i];
                 vertex.P = originalPosition;
                 vertex.Pu = originalPu;
                 vertex.Pv = originalPv;

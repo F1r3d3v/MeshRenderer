@@ -34,51 +34,55 @@
             flowLayoutPanel1 = new FlowLayoutPanel();
             groupBox1 = new GroupBox();
             flowLayoutPanel2 = new FlowLayoutPanel();
-            customSilder1 = new CustomControls.CustomSilder();
-            customSilder2 = new CustomControls.CustomSilder();
-            customSilder3 = new CustomControls.CustomSilder();
-            checkBox1 = new CheckBox();
+            csDensity = new CustomControls.CustomSilder();
+            csZRotation = new CustomControls.CustomSilder();
+            csXRotation = new CustomControls.CustomSilder();
+            cbWireframe = new CheckBox();
             groupBox2 = new GroupBox();
             flowLayoutPanel3 = new FlowLayoutPanel();
-            customSilder4 = new CustomControls.CustomSilder();
-            customSilder5 = new CustomControls.CustomSilder();
-            customSilder6 = new CustomControls.CustomSilder();
-            customSilder7 = new CustomControls.CustomSilder();
-            button1 = new Button();
+            csCoefKd = new CustomControls.CustomSilder();
+            csCoefKs = new CustomControls.CustomSilder();
+            csCoefM = new CustomControls.CustomSilder();
+            csLightZPlane = new CustomControls.CustomSilder();
+            flowLayoutPanel5 = new FlowLayoutPanel();
+            bLightColor = new Button();
+            bAnimation = new Button();
             groupBox3 = new GroupBox();
             flowLayoutPanel4 = new FlowLayoutPanel();
-            button2 = new Button();
-            checkBox2 = new CheckBox();
-            texturePicker1 = new CustomControls.TexturePicker();
-            texturePicker2 = new CustomControls.TexturePicker();
+            bSurfaceColor = new Button();
+            cbTexture = new CheckBox();
+            pTexture = new CustomControls.TexturePicker();
+            cbNormalMap = new CheckBox();
+            pNormalMap = new CustomControls.TexturePicker();
             panel1.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
             groupBox1.SuspendLayout();
             flowLayoutPanel2.SuspendLayout();
             groupBox2.SuspendLayout();
             flowLayoutPanel3.SuspendLayout();
+            flowLayoutPanel5.SuspendLayout();
             groupBox3.SuspendLayout();
             flowLayoutPanel4.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
             // 
-            panel1.AutoSize = true;
-            panel1.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             panel1.Controls.Add(renderCanvas);
             panel1.Controls.Add(flowLayoutPanel1);
+            panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 0);
             panel1.Margin = new Padding(0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1070, 602);
+            panel1.Size = new Size(1157, 661);
             panel1.TabIndex = 0;
             // 
             // renderCanvas
             // 
+            renderCanvas.Dock = DockStyle.Fill;
             renderCanvas.Location = new Point(0, 0);
             renderCanvas.Margin = new Padding(0);
             renderCanvas.Name = "renderCanvas";
-            renderCanvas.Size = new Size(858, 599);
+            renderCanvas.Size = new Size(940, 661);
             renderCanvas.TabIndex = 1;
             renderCanvas.Text = "canvas1";
             // 
@@ -89,10 +93,13 @@
             flowLayoutPanel1.Controls.Add(groupBox1);
             flowLayoutPanel1.Controls.Add(groupBox2);
             flowLayoutPanel1.Controls.Add(groupBox3);
+            flowLayoutPanel1.Dock = DockStyle.Right;
             flowLayoutPanel1.FlowDirection = FlowDirection.TopDown;
-            flowLayoutPanel1.Location = new Point(858, 0);
+            flowLayoutPanel1.Location = new Point(940, 0);
+            flowLayoutPanel1.Margin = new Padding(0);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(209, 599);
+            flowLayoutPanel1.Padding = new Padding(5, 0, 3, 0);
+            flowLayoutPanel1.Size = new Size(217, 661);
             flowLayoutPanel1.TabIndex = 0;
             // 
             // groupBox1
@@ -100,7 +107,7 @@
             groupBox1.AutoSize = true;
             groupBox1.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             groupBox1.Controls.Add(flowLayoutPanel2);
-            groupBox1.Location = new Point(0, 0);
+            groupBox1.Location = new Point(5, 0);
             groupBox1.Margin = new Padding(0, 0, 3, 0);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new Size(206, 176);
@@ -112,10 +119,10 @@
             // 
             flowLayoutPanel2.AutoSize = true;
             flowLayoutPanel2.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            flowLayoutPanel2.Controls.Add(customSilder1);
-            flowLayoutPanel2.Controls.Add(customSilder2);
-            flowLayoutPanel2.Controls.Add(customSilder3);
-            flowLayoutPanel2.Controls.Add(checkBox1);
+            flowLayoutPanel2.Controls.Add(csDensity);
+            flowLayoutPanel2.Controls.Add(csZRotation);
+            flowLayoutPanel2.Controls.Add(csXRotation);
+            flowLayoutPanel2.Controls.Add(cbWireframe);
             flowLayoutPanel2.Dock = DockStyle.Fill;
             flowLayoutPanel2.FlowDirection = FlowDirection.TopDown;
             flowLayoutPanel2.Location = new Point(3, 19);
@@ -124,70 +131,70 @@
             flowLayoutPanel2.Size = new Size(200, 154);
             flowLayoutPanel2.TabIndex = 0;
             // 
-            // customSilder1
+            // csDensity
             // 
-            customSilder1.BackColor = SystemColors.Control;
-            customSilder1.Divider = 1;
-            customSilder1.Location = new Point(0, 0);
-            customSilder1.Margin = new Padding(0);
-            customSilder1.MaxValue = 50;
-            customSilder1.MinValue = 10;
-            customSilder1.Name = "customSilder1";
-            customSilder1.Size = new Size(200, 45);
-            customSilder1.SliderText = "Triangulation density";
-            customSilder1.TabIndex = 0;
-            customSilder1.Value = 30;
+            csDensity.BackColor = SystemColors.Control;
+            csDensity.Divider = 1;
+            csDensity.Location = new Point(0, 0);
+            csDensity.Margin = new Padding(0);
+            csDensity.MaxValue = 50;
+            csDensity.MinValue = 2;
+            csDensity.Name = "csDensity";
+            csDensity.Size = new Size(200, 45);
+            csDensity.SliderText = "Triangulation density";
+            csDensity.TabIndex = 0;
+            csDensity.Value = 30;
             // 
-            // customSilder2
+            // csZRotation
             // 
-            customSilder2.BackColor = SystemColors.Control;
-            customSilder2.Divider = 1;
-            customSilder2.Location = new Point(0, 45);
-            customSilder2.Margin = new Padding(0);
-            customSilder2.MaxValue = 45;
-            customSilder2.MinValue = -45;
-            customSilder2.Name = "customSilder2";
-            customSilder2.Size = new Size(200, 45);
-            customSilder2.SliderText = "Z axis rotation";
-            customSilder2.TabIndex = 1;
-            customSilder2.Value = 0;
+            csZRotation.BackColor = SystemColors.Control;
+            csZRotation.Divider = 1;
+            csZRotation.Location = new Point(0, 45);
+            csZRotation.Margin = new Padding(0);
+            csZRotation.MaxValue = 45;
+            csZRotation.MinValue = -45;
+            csZRotation.Name = "csZRotation";
+            csZRotation.Size = new Size(200, 45);
+            csZRotation.SliderText = "Z axis rotation";
+            csZRotation.TabIndex = 1;
+            csZRotation.Value = 0;
             // 
-            // customSilder3
+            // csXRotation
             // 
-            customSilder3.BackColor = SystemColors.Control;
-            customSilder3.Divider = 1;
-            customSilder3.Location = new Point(0, 90);
-            customSilder3.Margin = new Padding(0);
-            customSilder3.MaxValue = 10;
-            customSilder3.MinValue = 0;
-            customSilder3.Name = "customSilder3";
-            customSilder3.Size = new Size(200, 45);
-            customSilder3.SliderText = "X axis rotation";
-            customSilder3.TabIndex = 2;
-            customSilder3.Value = 0;
+            csXRotation.BackColor = SystemColors.Control;
+            csXRotation.Divider = 1;
+            csXRotation.Location = new Point(0, 90);
+            csXRotation.Margin = new Padding(0);
+            csXRotation.MaxValue = 90;
+            csXRotation.MinValue = 0;
+            csXRotation.Name = "csXRotation";
+            csXRotation.Size = new Size(200, 45);
+            csXRotation.SliderText = "X axis rotation";
+            csXRotation.TabIndex = 2;
+            csXRotation.Value = 0;
             // 
-            // checkBox1
+            // cbWireframe
             // 
-            checkBox1.AutoSize = true;
-            checkBox1.Checked = true;
-            checkBox1.CheckState = CheckState.Checked;
-            checkBox1.Location = new Point(5, 135);
-            checkBox1.Margin = new Padding(5, 0, 0, 0);
-            checkBox1.Name = "checkBox1";
-            checkBox1.Size = new Size(81, 19);
-            checkBox1.TabIndex = 3;
-            checkBox1.Text = "Wireframe";
-            checkBox1.UseVisualStyleBackColor = true;
+            cbWireframe.AutoSize = true;
+            cbWireframe.Checked = true;
+            cbWireframe.CheckState = CheckState.Checked;
+            cbWireframe.Location = new Point(5, 135);
+            cbWireframe.Margin = new Padding(5, 0, 0, 0);
+            cbWireframe.Name = "cbWireframe";
+            cbWireframe.Size = new Size(81, 19);
+            cbWireframe.TabIndex = 3;
+            cbWireframe.Text = "Wireframe";
+            cbWireframe.UseVisualStyleBackColor = true;
             // 
             // groupBox2
             // 
             groupBox2.AutoSize = true;
             groupBox2.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             groupBox2.Controls.Add(flowLayoutPanel3);
-            groupBox2.Location = new Point(0, 176);
+            groupBox2.Location = new Point(5, 176);
             groupBox2.Margin = new Padding(0, 0, 3, 0);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(206, 231);
+            groupBox2.Size = new Size(206, 260);
             groupBox2.TabIndex = 1;
             groupBox2.TabStop = false;
             groupBox2.Text = "Lighting";
@@ -196,93 +203,117 @@
             // 
             flowLayoutPanel3.AutoSize = true;
             flowLayoutPanel3.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            flowLayoutPanel3.Controls.Add(customSilder4);
-            flowLayoutPanel3.Controls.Add(customSilder5);
-            flowLayoutPanel3.Controls.Add(customSilder6);
-            flowLayoutPanel3.Controls.Add(customSilder7);
-            flowLayoutPanel3.Controls.Add(button1);
+            flowLayoutPanel3.Controls.Add(csCoefKd);
+            flowLayoutPanel3.Controls.Add(csCoefKs);
+            flowLayoutPanel3.Controls.Add(csCoefM);
+            flowLayoutPanel3.Controls.Add(csLightZPlane);
+            flowLayoutPanel3.Controls.Add(flowLayoutPanel5);
             flowLayoutPanel3.Dock = DockStyle.Fill;
             flowLayoutPanel3.FlowDirection = FlowDirection.TopDown;
             flowLayoutPanel3.Location = new Point(3, 19);
             flowLayoutPanel3.Margin = new Padding(0);
             flowLayoutPanel3.Name = "flowLayoutPanel3";
-            flowLayoutPanel3.Size = new Size(200, 209);
+            flowLayoutPanel3.Size = new Size(200, 238);
             flowLayoutPanel3.TabIndex = 0;
             // 
-            // customSilder4
+            // csCoefKd
             // 
-            customSilder4.BackColor = SystemColors.Control;
-            customSilder4.Divider = 100;
-            customSilder4.Location = new Point(0, 0);
-            customSilder4.Margin = new Padding(0);
-            customSilder4.MaxValue = 100;
-            customSilder4.MinValue = 0;
-            customSilder4.Name = "customSilder4";
-            customSilder4.Size = new Size(200, 45);
-            customSilder4.SliderText = "Coeficient kd";
-            customSilder4.TabIndex = 0;
-            customSilder4.Value = 0;
+            csCoefKd.BackColor = SystemColors.Control;
+            csCoefKd.Divider = 100;
+            csCoefKd.Location = new Point(0, 0);
+            csCoefKd.Margin = new Padding(0);
+            csCoefKd.MaxValue = 100;
+            csCoefKd.MinValue = 0;
+            csCoefKd.Name = "csCoefKd";
+            csCoefKd.Size = new Size(200, 45);
+            csCoefKd.SliderText = "Coeficient kd";
+            csCoefKd.TabIndex = 0;
+            csCoefKd.Value = 0;
             // 
-            // customSilder5
+            // csCoefKs
             // 
-            customSilder5.BackColor = SystemColors.Control;
-            customSilder5.Divider = 100;
-            customSilder5.Location = new Point(0, 45);
-            customSilder5.Margin = new Padding(0);
-            customSilder5.MaxValue = 100;
-            customSilder5.MinValue = 0;
-            customSilder5.Name = "customSilder5";
-            customSilder5.Size = new Size(200, 45);
-            customSilder5.SliderText = "Coeficient ks";
-            customSilder5.TabIndex = 1;
-            customSilder5.Value = 0;
+            csCoefKs.BackColor = SystemColors.Control;
+            csCoefKs.Divider = 100;
+            csCoefKs.Location = new Point(0, 45);
+            csCoefKs.Margin = new Padding(0);
+            csCoefKs.MaxValue = 100;
+            csCoefKs.MinValue = 0;
+            csCoefKs.Name = "csCoefKs";
+            csCoefKs.Size = new Size(200, 45);
+            csCoefKs.SliderText = "Coeficient ks";
+            csCoefKs.TabIndex = 1;
+            csCoefKs.Value = 0;
             // 
-            // customSilder6
+            // csCoefM
             // 
-            customSilder6.BackColor = SystemColors.Control;
-            customSilder6.Divider = 1;
-            customSilder6.Location = new Point(0, 90);
-            customSilder6.Margin = new Padding(0);
-            customSilder6.MaxValue = 100;
-            customSilder6.MinValue = 1;
-            customSilder6.Name = "customSilder6";
-            customSilder6.Size = new Size(200, 45);
-            customSilder6.SliderText = "Coeficient m";
-            customSilder6.TabIndex = 2;
-            customSilder6.Value = 1;
+            csCoefM.BackColor = SystemColors.Control;
+            csCoefM.Divider = 1;
+            csCoefM.Location = new Point(0, 90);
+            csCoefM.Margin = new Padding(0);
+            csCoefM.MaxValue = 100;
+            csCoefM.MinValue = 1;
+            csCoefM.Name = "csCoefM";
+            csCoefM.Size = new Size(200, 45);
+            csCoefM.SliderText = "Coeficient m";
+            csCoefM.TabIndex = 2;
+            csCoefM.Value = 1;
             // 
-            // customSilder7
+            // csLightZPlane
             // 
-            customSilder7.BackColor = SystemColors.Control;
-            customSilder7.Divider = 1;
-            customSilder7.Location = new Point(0, 135);
-            customSilder7.Margin = new Padding(0);
-            customSilder7.MaxValue = 10;
-            customSilder7.MinValue = 0;
-            customSilder7.Name = "customSilder7";
-            customSilder7.Size = new Size(200, 45);
-            customSilder7.SliderText = "Light source Z plane";
-            customSilder7.TabIndex = 3;
-            customSilder7.Value = 0;
+            csLightZPlane.BackColor = SystemColors.Control;
+            csLightZPlane.Divider = 1;
+            csLightZPlane.Location = new Point(0, 135);
+            csLightZPlane.Margin = new Padding(0);
+            csLightZPlane.MaxValue = -100;
+            csLightZPlane.MinValue = -300;
+            csLightZPlane.Name = "csLightZPlane";
+            csLightZPlane.Size = new Size(200, 45);
+            csLightZPlane.SliderText = "Light source Z plane";
+            csLightZPlane.TabIndex = 3;
+            csLightZPlane.Value = -300;
             // 
-            // button1
+            // flowLayoutPanel5
             // 
-            button1.Location = new Point(3, 183);
-            button1.Name = "button1";
-            button1.Size = new Size(194, 23);
-            button1.TabIndex = 4;
-            button1.Text = "Light source color";
-            button1.UseVisualStyleBackColor = true;
+            flowLayoutPanel5.AutoSize = true;
+            flowLayoutPanel5.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            flowLayoutPanel5.Controls.Add(bLightColor);
+            flowLayoutPanel5.Controls.Add(bAnimation);
+            flowLayoutPanel5.Dock = DockStyle.Fill;
+            flowLayoutPanel5.Location = new Point(0, 180);
+            flowLayoutPanel5.Margin = new Padding(0);
+            flowLayoutPanel5.Name = "flowLayoutPanel5";
+            flowLayoutPanel5.Size = new Size(200, 58);
+            flowLayoutPanel5.TabIndex = 6;
+            // 
+            // bLightColor
+            // 
+            bLightColor.Location = new Point(3, 3);
+            bLightColor.Margin = new Padding(3, 3, 2, 3);
+            bLightColor.Name = "bLightColor";
+            bLightColor.Size = new Size(95, 52);
+            bLightColor.TabIndex = 4;
+            bLightColor.Text = "Light color";
+            bLightColor.UseVisualStyleBackColor = true;
+            // 
+            // bAnimation
+            // 
+            bAnimation.Location = new Point(101, 3);
+            bAnimation.Margin = new Padding(1, 3, 0, 3);
+            bAnimation.Name = "bAnimation";
+            bAnimation.Size = new Size(95, 52);
+            bAnimation.TabIndex = 5;
+            bAnimation.Text = "Play animation";
+            bAnimation.UseVisualStyleBackColor = true;
             // 
             // groupBox3
             // 
             groupBox3.AutoSize = true;
             groupBox3.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             groupBox3.Controls.Add(flowLayoutPanel4);
-            groupBox3.Location = new Point(0, 407);
+            groupBox3.Location = new Point(5, 436);
             groupBox3.Margin = new Padding(0, 0, 3, 0);
             groupBox3.Name = "groupBox3";
-            groupBox3.Size = new Size(206, 192);
+            groupBox3.Size = new Size(206, 211);
             groupBox3.TabIndex = 2;
             groupBox3.TabStop = false;
             groupBox3.Text = "Material";
@@ -291,75 +322,82 @@
             // 
             flowLayoutPanel4.AutoSize = true;
             flowLayoutPanel4.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            flowLayoutPanel4.Controls.Add(button2);
-            flowLayoutPanel4.Controls.Add(checkBox2);
-            flowLayoutPanel4.Controls.Add(texturePicker1);
-            flowLayoutPanel4.Controls.Add(texturePicker2);
+            flowLayoutPanel4.Controls.Add(bSurfaceColor);
+            flowLayoutPanel4.Controls.Add(cbTexture);
+            flowLayoutPanel4.Controls.Add(pTexture);
+            flowLayoutPanel4.Controls.Add(cbNormalMap);
+            flowLayoutPanel4.Controls.Add(pNormalMap);
             flowLayoutPanel4.Dock = DockStyle.Fill;
             flowLayoutPanel4.FlowDirection = FlowDirection.TopDown;
             flowLayoutPanel4.Location = new Point(3, 19);
             flowLayoutPanel4.Name = "flowLayoutPanel4";
-            flowLayoutPanel4.Size = new Size(200, 170);
+            flowLayoutPanel4.Size = new Size(200, 189);
             flowLayoutPanel4.TabIndex = 0;
             // 
-            // button2
+            // bSurfaceColor
             // 
-            button2.Location = new Point(3, 3);
-            button2.Name = "button2";
-            button2.Size = new Size(194, 23);
-            button2.TabIndex = 5;
-            button2.Text = "Surface color";
-            button2.UseVisualStyleBackColor = true;
+            bSurfaceColor.Location = new Point(3, 3);
+            bSurfaceColor.Name = "bSurfaceColor";
+            bSurfaceColor.Size = new Size(194, 23);
+            bSurfaceColor.TabIndex = 5;
+            bSurfaceColor.Text = "Surface color";
+            bSurfaceColor.UseVisualStyleBackColor = true;
             // 
-            // checkBox2
+            // cbTexture
             // 
-            checkBox2.AutoSize = true;
-            checkBox2.Location = new Point(5, 29);
-            checkBox2.Margin = new Padding(5, 0, 0, 0);
-            checkBox2.Name = "checkBox2";
-            checkBox2.Size = new Size(144, 19);
-            checkBox2.TabIndex = 6;
-            checkBox2.Text = "Use texture as material";
-            checkBox2.UseVisualStyleBackColor = true;
+            cbTexture.AutoSize = true;
+            cbTexture.Location = new Point(5, 29);
+            cbTexture.Margin = new Padding(5, 0, 0, 0);
+            cbTexture.Name = "cbTexture";
+            cbTexture.Size = new Size(84, 19);
+            cbTexture.TabIndex = 6;
+            cbTexture.Text = "Use texture";
+            cbTexture.UseVisualStyleBackColor = true;
             // 
-            // texturePicker1
+            // pTexture
             // 
-            texturePicker1.ButtonText = "Choose texture";
-            texturePicker1.DefaultTexture = "brickwall.jpg";
-            texturePicker1.FilePath = null;
-            texturePicker1.Location = new Point(0, 48);
-            texturePicker1.Margin = new Padding(0);
-            texturePicker1.Name = "texturePicker1";
-            texturePicker1.Padding = new Padding(3);
-            texturePicker1.Size = new Size(200, 61);
-            texturePicker1.TabIndex = 7;
+            pTexture.ButtonText = "Choose texture";
+            pTexture.DefaultTexture = "brickwall.jpg";
+            pTexture.FilePath = null;
+            pTexture.Location = new Point(0, 48);
+            pTexture.Margin = new Padding(0);
+            pTexture.Name = "pTexture";
+            pTexture.Padding = new Padding(3);
+            pTexture.Size = new Size(200, 61);
+            pTexture.TabIndex = 7;
             // 
-            // texturePicker2
+            // cbNormalMap
             // 
-            texturePicker2.ButtonText = "Choose normal map";
-            texturePicker2.DefaultTexture = "brickwall_normal.jpg";
-            texturePicker2.FilePath = null;
-            texturePicker2.Location = new Point(0, 109);
-            texturePicker2.Margin = new Padding(0);
-            texturePicker2.Name = "texturePicker2";
-            texturePicker2.Padding = new Padding(3);
-            texturePicker2.Size = new Size(200, 61);
-            texturePicker2.TabIndex = 8;
+            cbNormalMap.AutoSize = true;
+            cbNormalMap.Location = new Point(5, 109);
+            cbNormalMap.Margin = new Padding(5, 0, 0, 0);
+            cbNormalMap.Name = "cbNormalMap";
+            cbNormalMap.Size = new Size(113, 19);
+            cbNormalMap.TabIndex = 9;
+            cbNormalMap.Text = "Use normal map";
+            cbNormalMap.UseVisualStyleBackColor = true;
+            // 
+            // pNormalMap
+            // 
+            pNormalMap.ButtonText = "Choose normal map";
+            pNormalMap.DefaultTexture = "brickwall_normal.jpg";
+            pNormalMap.FilePath = null;
+            pNormalMap.Location = new Point(0, 128);
+            pNormalMap.Margin = new Padding(0);
+            pNormalMap.Name = "pNormalMap";
+            pNormalMap.Padding = new Padding(3);
+            pNormalMap.Size = new Size(200, 61);
+            pNormalMap.TabIndex = 8;
             // 
             // Editor
             // 
             AutoScaleDimensions = new SizeF(96F, 96F);
             AutoScaleMode = AutoScaleMode.Dpi;
-            AutoSize = true;
-            AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            ClientSize = new Size(1417, 727);
+            ClientSize = new Size(1157, 661);
             Controls.Add(panel1);
-            FormBorderStyle = FormBorderStyle.FixedSingle;
             Icon = (Icon)resources.GetObject("$this.Icon");
-            MaximizeBox = false;
+            MinimumSize = new Size(1173, 700);
             Name = "Editor";
-            SizeGripStyle = SizeGripStyle.Hide;
-            StartPosition = FormStartPosition.CenterScreen;
             Text = "Mesh Editor";
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
@@ -372,12 +410,13 @@
             groupBox2.ResumeLayout(false);
             groupBox2.PerformLayout();
             flowLayoutPanel3.ResumeLayout(false);
+            flowLayoutPanel3.PerformLayout();
+            flowLayoutPanel5.ResumeLayout(false);
             groupBox3.ResumeLayout(false);
             groupBox3.PerformLayout();
             flowLayoutPanel4.ResumeLayout(false);
             flowLayoutPanel4.PerformLayout();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
@@ -387,22 +426,25 @@
         private FlowLayoutPanel flowLayoutPanel1;
         private GroupBox groupBox1;
         private GroupBox groupBox2;
-        private CustomControls.CustomSilder customSilder2;
-        private CustomControls.CustomSilder customSilder1;
-        private CustomControls.CustomSilder customSilder3;
-        private CheckBox checkBox1;
+        private CustomControls.CustomSilder csZRotation;
+        private CustomControls.CustomSilder csDensity;
+        private CustomControls.CustomSilder csXRotation;
+        private CheckBox cbWireframe;
         private FlowLayoutPanel flowLayoutPanel2;
         private FlowLayoutPanel flowLayoutPanel3;
-        private CustomControls.CustomSilder customSilder4;
-        private CustomControls.CustomSilder customSilder5;
-        private CustomControls.CustomSilder customSilder6;
-        private CustomControls.CustomSilder customSilder7;
+        private CustomControls.CustomSilder csCoefKd;
+        private CustomControls.CustomSilder csCoefKs;
+        private CustomControls.CustomSilder csCoefM;
+        private CustomControls.CustomSilder csLightZPlane;
         private GroupBox groupBox3;
-        private Button button1;
+        private Button bLightColor;
         private FlowLayoutPanel flowLayoutPanel4;
-        private Button button2;
-        private CheckBox checkBox2;
-        private CustomControls.TexturePicker texturePicker1;
-        private CustomControls.TexturePicker texturePicker2;
+        private Button bSurfaceColor;
+        private CheckBox cbTexture;
+        private CustomControls.TexturePicker pTexture;
+        private CustomControls.TexturePicker pNormalMap;
+        private CheckBox cbNormalMap;
+        private FlowLayoutPanel flowLayoutPanel5;
+        private Button bAnimation;
     }
 }
