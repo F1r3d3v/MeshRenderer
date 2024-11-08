@@ -140,10 +140,11 @@
             csDensity.MaxValue = 50;
             csDensity.MinValue = 2;
             csDensity.Name = "csDensity";
+            csDensity.RealValue = 0F;
             csDensity.Size = new Size(200, 45);
             csDensity.SliderText = "Triangulation density";
             csDensity.TabIndex = 0;
-            csDensity.Value = 30;
+            csDensity.Value = 15;
             // 
             // csZRotation
             // 
@@ -154,6 +155,7 @@
             csZRotation.MaxValue = 45;
             csZRotation.MinValue = -45;
             csZRotation.Name = "csZRotation";
+            csZRotation.RealValue = 0F;
             csZRotation.Size = new Size(200, 45);
             csZRotation.SliderText = "Z axis rotation";
             csZRotation.TabIndex = 1;
@@ -168,6 +170,7 @@
             csXRotation.MaxValue = 90;
             csXRotation.MinValue = 0;
             csXRotation.Name = "csXRotation";
+            csXRotation.RealValue = 0F;
             csXRotation.Size = new Size(200, 45);
             csXRotation.SliderText = "X axis rotation";
             csXRotation.TabIndex = 2;
@@ -225,6 +228,7 @@
             csCoefKd.MaxValue = 100;
             csCoefKd.MinValue = 0;
             csCoefKd.Name = "csCoefKd";
+            csCoefKd.RealValue = 0F;
             csCoefKd.Size = new Size(200, 45);
             csCoefKd.SliderText = "Coeficient kd";
             csCoefKd.TabIndex = 0;
@@ -239,6 +243,7 @@
             csCoefKs.MaxValue = 100;
             csCoefKs.MinValue = 0;
             csCoefKs.Name = "csCoefKs";
+            csCoefKs.RealValue = 0F;
             csCoefKs.Size = new Size(200, 45);
             csCoefKs.SliderText = "Coeficient ks";
             csCoefKs.TabIndex = 1;
@@ -253,6 +258,7 @@
             csCoefM.MaxValue = 100;
             csCoefM.MinValue = 1;
             csCoefM.Name = "csCoefM";
+            csCoefM.RealValue = 0F;
             csCoefM.Size = new Size(200, 45);
             csCoefM.SliderText = "Coeficient m";
             csCoefM.TabIndex = 2;
@@ -264,13 +270,14 @@
             csLightZPlane.Divider = 1;
             csLightZPlane.Location = new Point(0, 135);
             csLightZPlane.Margin = new Padding(0);
-            csLightZPlane.MaxValue = -100;
+            csLightZPlane.MaxValue = 300;
             csLightZPlane.MinValue = -300;
             csLightZPlane.Name = "csLightZPlane";
+            csLightZPlane.RealValue = 0F;
             csLightZPlane.Size = new Size(200, 45);
             csLightZPlane.SliderText = "Light source Z plane";
             csLightZPlane.TabIndex = 3;
-            csLightZPlane.Value = -300;
+            csLightZPlane.Value = 0;
             // 
             // flowLayoutPanel5
             // 
@@ -304,6 +311,7 @@
             bAnimation.TabIndex = 5;
             bAnimation.Text = "Play animation";
             bAnimation.UseVisualStyleBackColor = true;
+            bAnimation.Click += bAnimation_Click;
             // 
             // groupBox3
             // 
@@ -342,6 +350,7 @@
             bSurfaceColor.TabIndex = 5;
             bSurfaceColor.Text = "Surface color";
             bSurfaceColor.UseVisualStyleBackColor = true;
+            bSurfaceColor.Click += bSurfaceColor_Click;
             // 
             // cbTexture
             // 

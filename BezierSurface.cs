@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 
 namespace GK1_MeshEditor
 {
-    internal class BezierSurface
+    internal class BezierSurface : GraphicsObject
     {
         public Vector3[,] ControlPoints { get; set; } = new Vector3[4,4];
         public Mesh? Mesh { get; set; }
-        public Color Color { get; set; }
+        public Color Color { get; set; } = Color.Gray;
         public Texture? Texture { get; set; }
+        public NormalMap? NormalMap { get; set; }
         public BezierSurface() { }
 
         public BezierSurface(Vector3[,] controlPoints)
@@ -54,6 +55,46 @@ namespace GK1_MeshEditor
             }
 
             return surface;
+        }
+
+        public override void Draw(Renderer renderer)
+        {
+            if (Mesh != null)
+            {
+                if (EditorViewModel.GetInstance().RenderWireframe)
+                    renderer.DrawWireframe(Mesh);
+                else
+                    renderer.DrawMesh(Mesh);
+            }
+
+            DrawControlPoints(renderer);
+        }
+
+        private void DrawControlPoints(Renderer renderer)
+        {
+            Pen p = new Pen(Color.Red, 2);
+            for (int i = 0; i < ControlPoints.GetLength(0); i++)
+            {
+                for (int j = 0; j < ControlPoints.GetLength(1); j++)
+                {
+                    Vector3 point = ControlPoints[i, j];
+
+                    if (j < ControlPoints.GetLength(1) - 1)
+                    {
+                        Vector3 nextPointH = ControlPoints[i, j + 1];
+                        renderer.DrawLine(point, nextPointH, p);
+                    }
+
+                    if (i < ControlPoints.GetLength(0) - 1)
+                    {
+                        Vector3 nextPointV = ControlPoints[i + 1, j];
+                        renderer.DrawLine(point, nextPointV, p);
+                    }
+
+                    renderer.DrawPoint(point, Brushes.Green);
+                }
+            }
+            p.Dispose();
         }
     }
 }

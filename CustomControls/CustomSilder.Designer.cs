@@ -77,6 +77,7 @@
             Controls.Add(SliderValue);
             Name = "CustomSilder";
             Size = new Size(200, 45);
+            Load += CustomSilder_Load;
             ((System.ComponentModel.ISupportInitialize)Slider).EndInit();
             ResumeLayout(false);
             PerformLayout();

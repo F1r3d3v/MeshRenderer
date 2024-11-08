@@ -1,31 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Numerics;
 
 namespace GK1_MeshEditor
 {
-    internal class Util
+    internal static class Util
     {
-        public static Vector3 CartesianToBaricentric(Vector3 p, Vector3 a, Vector3 b, Vector3 c)
+        public static Vector3 CartesianToBaricentric(Vector2 p, Vector2 a, Vector2 b, Vector2 c)
         {
-            Vector3 v0 = b - a;
-            Vector3 v1 = c - a;
-            Vector3 v2 = p - a;
-            float d00 = Vector3.Dot(v0, v0);
-            float d01 = Vector3.Dot(v0, v1);
-            float d11 = Vector3.Dot(v1, v1);
-            float d20 = Vector3.Dot(v2, v0);
-            float d21 = Vector3.Dot(v2, v1);
-            float denom = d00 * d11 - d01 * d01;
-            float alpha = (d11 * d20 - d01 * d21) / denom;
-            float beta = (d00 * d21 - d01 * d20) / denom;
-            float gamma = 1.0f - alpha - beta;
+            Vector2 v0 = b - a, v1 = c - a, v2 = p - a;
+            float invDen = 1 / (v0.X * v1.Y - v1.X * v0.Y);
+            float v = (v2.X * v1.Y - v1.X * v2.Y) * invDen;
+            float w = (v0.X * v2.Y - v2.X * v0.Y) * invDen;
+            float u = 1.0f - v - w;
 
-            return new Vector3(alpha, beta, gamma);
+            return new Vector3(u, v, w);
+        }
+
+        public static Vertex InterpolateVertex(Triangle tri, Vector3 baricentricCoords)
+        {
+            float u = baricentricCoords.X;
+            float v = baricentricCoords.Y;
+            float w = baricentricCoords.Z;
+            
+            Vector3 interpolatedP = u * tri.V1.P + v * tri.V2.P + w * tri.V3.P;
+            Vector3 interpolatedPu = u * tri.V1.Pu + v * tri.V2.Pu + w * tri.V3.Pu;
+            Vector3 interpolatedPv = u * tri.V1.Pv + v * tri.V2.Pv + w * tri.V3.Pv;
+            Vector2 interpolatedUV = u * tri.V1.UV + v * tri.V2.UV + w * tri.V3.UV;
+
+            return new Vertex(interpolatedP, interpolatedPu, interpolatedPv, interpolatedUV);
+        }
+
+        public static Matrix4x4 AssignVectorToMatrix(Matrix4x4 m, Vector3 v, int col)
+        {
+            m[0, col] = v.X;
+            m[0, col] = v.Y;
+            m[0, col] = v.Z;
+            m[0, col] = 0.0f;
+            return m;
         }
 
     }
