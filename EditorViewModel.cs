@@ -44,7 +44,7 @@ namespace GK1_MeshEditor
                 if (!SetField(ref _lightPosition, value)) return;
             }
         }
-        public Color LightColor { get; private set; } = Color.White;
+        public Color LightColor { get; set; } = Color.White;
 
         private int _surfaceDensity;
         public int SurfaceDensity

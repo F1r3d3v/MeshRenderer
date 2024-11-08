@@ -68,10 +68,10 @@ namespace GK1_MeshEditor
                 for (int j = 0; j < 4; j++)
                 {
                     Vector3 diff = _controlPoints[i + 1, j] - _controlPoints[i, j];
-                    tangentU += 3 * diff * bernU[i] * bernV[j];
+                    tangentU += diff * bernU[i] * bernV[j];
                 }
             }
-            return tangentU;
+            return 3 * tangentU;
         }
         private Vector3 CalculatePv(float u, float v, float[] bernU, float[] bernV)
         {
@@ -82,10 +82,10 @@ namespace GK1_MeshEditor
                 for (int j = 0; j < 3; j++)
                 {
                     Vector3 diff = _controlPoints[i, j + 1] - _controlPoints[i, j];
-                    tangentV += 3 * diff * bernU[i] * bernV[j];
+                    tangentV += diff * bernU[i] * bernV[j];
                 }
             }
-            return tangentV;
+            return 3 * tangentV;
         }
 
         private Vector3 CalculatePosition(float u, float v, float[] bernU, float[] bernV)

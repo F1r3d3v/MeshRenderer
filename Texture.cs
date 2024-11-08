@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GK1_PolygonEditor;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -9,15 +10,20 @@ namespace GK1_MeshEditor
 {
     internal class Texture
     {
-        private Bitmap _texture;
+        private DirectBitmap _texture;
 
-        public Texture(Bitmap texture)
+        public Texture(string path)
         {
-            _texture = texture;
+            Bitmap m = new Bitmap(path);
+            _texture = new DirectBitmap(m.Width, m.Height);
+            Graphics g = Graphics.FromImage(_texture.Bitmap);
+            g.DrawImage(m, 0, 0);
         }
 
         public Color Sample(float u, float v)
         {
+            u = Math.Clamp(u, 0f, 1f);
+            v = Math.Clamp(v, 0f, 1f);
             int x = (int)(u * (_texture.Width - 1));
             int y = (int)(v * (_texture.Height - 1));
             return _texture.GetPixel(x, y);

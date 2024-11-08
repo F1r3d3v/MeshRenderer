@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -9,15 +10,20 @@ namespace GK1_MeshEditor
 {
     internal class NormalMap
     {
-        private Bitmap _normalMap;
+        private DirectBitmap _normalMap;
 
-        public NormalMap(Bitmap normalMap)
+        public NormalMap(string path)
         {
-            _normalMap = normalMap;
+            Bitmap m = new Bitmap(path);
+            _normalMap = new DirectBitmap(m.Width, m.Height);
+            Graphics g = Graphics.FromImage(_normalMap.Bitmap);
+            g.DrawImage(m, 0, 0);
         }
 
         public Vector3 Sample(float u, float v)
         {
+            u = Math.Clamp(u, 0f, 1f);
+            v = Math.Clamp(v, 0f, 1f);
             int x = (int)(u * (_normalMap.Width - 1));
             int y = (int)(v * (_normalMap.Height - 1));
             Color color = _normalMap.GetPixel(x, y);

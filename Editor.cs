@@ -45,6 +45,9 @@ namespace GK1_MeshEditor
             Model.DensityChanged += Model_DensityChanged;
             Model.RotationChanged += Model_RotationChanged;
             Model.PropertyChanged += (s, e) => renderer.RenderScene();
+            pTexture.TextureChanged += (s, e) => renderer.RenderScene();
+            pNormalMap.TextureChanged += (s, e) => renderer.RenderScene();
+
             InitBindings();
         }
 
@@ -65,18 +68,19 @@ namespace GK1_MeshEditor
         private void Timer_Tick(object sender, EventArgs e)
         {
             float delta = deltaTime.GetDeltaTime();
-            //Console.WriteLine(delta);
-            angle += ((animDirection) ? 1 : -1) * MathF.PI/2 * delta;
+            angle += ((animDirection) ? 1 : -1) * MathF.PI / 2 * delta;
             float turnGap = 25.0f;
 
             if (angle > 6 * Math.PI) animDirection = false;
             else if (angle < 0) animDirection = true;
 
-            Vector3 lightPos = Model.LightPosition;
-            lightPos.X = (turnGap * angle) * (float)Math.Cos(angle);
-            lightPos.Y = (turnGap * angle) * (float)Math.Sin(angle);
-            //Console.WriteLine(lightPos);
-            Model.LightPosition = lightPos;
+            lock (EditorViewModel.GetInstance())
+            {
+                Vector3 lightPos = Model.LightPosition;
+                lightPos.X = (turnGap * angle) * (float)Math.Cos(angle);
+                lightPos.Y = (turnGap * angle) * (float)Math.Sin(angle);
+                Model.LightPosition = lightPos;
+            }
         }
 
 
@@ -100,18 +104,22 @@ namespace GK1_MeshEditor
             cbWireframe.DataBindings.Add(binding);
 
             binding = new Binding("Value", Model, "LightPosition", true, DataSourceUpdateMode.OnPropertyChanged);
-            binding.Parse += (sender, e) => e.Value = new Vector3(Model.LightPosition.X, Model.LightPosition.Y, Convert.ToSingle(e.Value!));
+            binding.Parse += (sender, e) =>
+            {
+                lock (EditorViewModel.GetInstance())
+                    e.Value = new Vector3(Model.LightPosition.X, Model.LightPosition.Y, Convert.ToSingle(e.Value!));
+            };
             binding.Format += (sender, e) => e.Value = Convert.ToInt32(((Vector3)e.Value!).Z);
             csLightZPlane.TrackBar.DataBindings.Add(binding);
 
             binding = new Binding("Value", Model, "CoefKd", true, DataSourceUpdateMode.OnPropertyChanged);
-            binding.Parse += (sender, e) => e.Value = (int)e.Value! / 100.0f;
-            binding.Format += (sender, e) => e.Value = Convert.ToInt32(((float)e.Value!) * 100);
+            binding.Parse += (sender, e) => e.Value = (int)e.Value! / Convert.ToSingle(csCoefKd.Divider);
+            binding.Format += (sender, e) => e.Value = Convert.ToInt32(((float)e.Value!) * csCoefKd.Divider);
             csCoefKd.TrackBar.DataBindings.Add(binding);
 
             binding = new Binding("Value", Model, "CoefKs", true, DataSourceUpdateMode.OnPropertyChanged);
-            binding.Parse += (sender, e) => e.Value = (int)e.Value! / 100.0f;
-            binding.Format += (sender, e) => e.Value = Convert.ToInt32(((float)e.Value!) * 100);
+            binding.Parse += (sender, e) => e.Value = (int)e.Value! / Convert.ToSingle(csCoefKs.Divider);
+            binding.Format += (sender, e) => e.Value = Convert.ToInt32(((float)e.Value!) * csCoefKs.Divider);
             csCoefKs.TrackBar.DataBindings.Add(binding);
 
             binding = new Binding("Value", Model, "CoefM", true, DataSourceUpdateMode.OnPropertyChanged);
@@ -137,11 +145,36 @@ namespace GK1_MeshEditor
         {
             ColorDialog dlg = new ColorDialog();
             dlg.FullOpen = true;
+            dlg.Color = bezierSurface.Color;
             if (dlg.ShowDialog() == DialogResult.OK)
             {
                 bezierSurface.Color = dlg.Color;
                 renderer.RenderScene();
             }
+        }
+
+        private void bLightColor_Click(object sender, EventArgs e)
+        {
+            ColorDialog dlg = new ColorDialog();
+            dlg.FullOpen = true;
+            dlg.Color = Model.LightColor;
+            if (dlg.ShowDialog() == DialogResult.OK)
+            {
+                Model.LightColor = dlg.Color;
+                renderer.RenderScene();
+            }
+        }
+
+        private void cbTexture_CheckedChanged(object sender, EventArgs e)
+        {
+            bezierSurface.Texture = (((CheckBox)sender).Checked) ? new Texture(pTexture.FilePath!) : null;
+            renderer.RenderScene();
+        }
+
+        private void cbNormalMap_CheckedChanged(object sender, EventArgs e)
+        {
+            bezierSurface.NormalMap = (((CheckBox)sender).Checked) ? new NormalMap(pNormalMap.FilePath!) : null;
+            renderer.RenderScene();
         }
     }
 }

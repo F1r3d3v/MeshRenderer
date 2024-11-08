@@ -29,11 +29,9 @@ namespace GK1_MeshEditor
 
         private void OnPaint(object sender, PaintEventArgs e)
         {
-            //Graphics g = e.Graphics;
-            //g.ScaleTransform(1, -1);
-            //g.TranslateTransform(_canvas.Width / 2, -_canvas.Height / 2);
+            lock (EditorViewModel.GetInstance())
+                _scene.Render(this);
 
-            _scene.Render(this);
             DrawPoint(EditorViewModel.GetInstance().LightPosition, Brushes.Black);
 
             e.Graphics.DrawImage(_bitmap.Bitmap, 0, 0);
@@ -203,10 +201,7 @@ namespace GK1_MeshEditor
             }
         }
 
-        public void RenderScene()
-        {
-            _canvas.Invalidate();
-        }
+        public void RenderScene() => _canvas.Invalidate();
 
         public void Dispose()
         {

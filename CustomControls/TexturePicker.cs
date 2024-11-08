@@ -14,11 +14,15 @@ namespace GK1_MeshEditor.CustomControls
 {
     public partial class TexturePicker : UserControl
     {
+        public delegate void TexturePickerEventHandler(object sender, string? path);
+        public event TexturePickerEventHandler? TextureChanged;
+
         [Category("Appearance")]
         public string ButtonText
         {
             get => button1.Text; set => button1.Text = value;
         }
+        public string? FilePath { get; private set; }
 
         private string _default = String.Empty;
         [Category("Behavior")]
@@ -36,8 +40,6 @@ namespace GK1_MeshEditor.CustomControls
             }
         }
 
-        public string? FilePath { get; set; }
-
         public TexturePicker()
         {
             InitializeComponent();
@@ -53,6 +55,7 @@ namespace GK1_MeshEditor.CustomControls
             {
                 FilePath = ofd.FileName;
                 pictureBox1.Image = Bitmap.FromFile(FilePath);
+                TextureChanged?.Invoke(this, FilePath);
             }
         }
     }

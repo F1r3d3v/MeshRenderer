@@ -140,7 +140,6 @@
             csDensity.MaxValue = 50;
             csDensity.MinValue = 2;
             csDensity.Name = "csDensity";
-            csDensity.RealValue = 0F;
             csDensity.Size = new Size(200, 45);
             csDensity.SliderText = "Triangulation density";
             csDensity.TabIndex = 0;
@@ -152,10 +151,9 @@
             csZRotation.Divider = 1;
             csZRotation.Location = new Point(0, 45);
             csZRotation.Margin = new Padding(0);
-            csZRotation.MaxValue = 45;
-            csZRotation.MinValue = -45;
+            csZRotation.MaxValue = 90;
+            csZRotation.MinValue = -90;
             csZRotation.Name = "csZRotation";
-            csZRotation.RealValue = 0F;
             csZRotation.Size = new Size(200, 45);
             csZRotation.SliderText = "Z axis rotation";
             csZRotation.TabIndex = 1;
@@ -168,13 +166,12 @@
             csXRotation.Location = new Point(0, 90);
             csXRotation.Margin = new Padding(0);
             csXRotation.MaxValue = 90;
-            csXRotation.MinValue = 0;
+            csXRotation.MinValue = -90;
             csXRotation.Name = "csXRotation";
-            csXRotation.RealValue = 0F;
             csXRotation.Size = new Size(200, 45);
             csXRotation.SliderText = "X axis rotation";
             csXRotation.TabIndex = 2;
-            csXRotation.Value = 0;
+            csXRotation.Value = 45;
             // 
             // cbWireframe
             // 
@@ -228,11 +225,10 @@
             csCoefKd.MaxValue = 100;
             csCoefKd.MinValue = 0;
             csCoefKd.Name = "csCoefKd";
-            csCoefKd.RealValue = 0F;
             csCoefKd.Size = new Size(200, 45);
             csCoefKd.SliderText = "Coeficient kd";
             csCoefKd.TabIndex = 0;
-            csCoefKd.Value = 0;
+            csCoefKd.Value = 50;
             // 
             // csCoefKs
             // 
@@ -241,13 +237,12 @@
             csCoefKs.Location = new Point(0, 45);
             csCoefKs.Margin = new Padding(0);
             csCoefKs.MaxValue = 100;
-            csCoefKs.MinValue = 0;
+            csCoefKs.MinValue = 1;
             csCoefKs.Name = "csCoefKs";
-            csCoefKs.RealValue = 0F;
             csCoefKs.Size = new Size(200, 45);
             csCoefKs.SliderText = "Coeficient ks";
             csCoefKs.TabIndex = 1;
-            csCoefKs.Value = 0;
+            csCoefKs.Value = 50;
             // 
             // csCoefM
             // 
@@ -258,11 +253,10 @@
             csCoefM.MaxValue = 100;
             csCoefM.MinValue = 1;
             csCoefM.Name = "csCoefM";
-            csCoefM.RealValue = 0F;
             csCoefM.Size = new Size(200, 45);
             csCoefM.SliderText = "Coeficient m";
             csCoefM.TabIndex = 2;
-            csCoefM.Value = 1;
+            csCoefM.Value = 10;
             // 
             // csLightZPlane
             // 
@@ -273,11 +267,10 @@
             csLightZPlane.MaxValue = 300;
             csLightZPlane.MinValue = -300;
             csLightZPlane.Name = "csLightZPlane";
-            csLightZPlane.RealValue = 0F;
             csLightZPlane.Size = new Size(200, 45);
             csLightZPlane.SliderText = "Light source Z plane";
             csLightZPlane.TabIndex = 3;
-            csLightZPlane.Value = 0;
+            csLightZPlane.Value = -300;
             // 
             // flowLayoutPanel5
             // 
@@ -301,6 +294,7 @@
             bLightColor.TabIndex = 4;
             bLightColor.Text = "Light color";
             bLightColor.UseVisualStyleBackColor = true;
+            bLightColor.Click += bLightColor_Click;
             // 
             // bAnimation
             // 
@@ -362,12 +356,12 @@
             cbTexture.TabIndex = 6;
             cbTexture.Text = "Use texture";
             cbTexture.UseVisualStyleBackColor = true;
+            cbTexture.CheckedChanged += cbTexture_CheckedChanged;
             // 
             // pTexture
             // 
             pTexture.ButtonText = "Choose texture";
             pTexture.DefaultTexture = "brickwall.jpg";
-            pTexture.FilePath = null;
             pTexture.Location = new Point(0, 48);
             pTexture.Margin = new Padding(0);
             pTexture.Name = "pTexture";
@@ -385,12 +379,12 @@
             cbNormalMap.TabIndex = 9;
             cbNormalMap.Text = "Use normal map";
             cbNormalMap.UseVisualStyleBackColor = true;
+            cbNormalMap.CheckedChanged += cbNormalMap_CheckedChanged;
             // 
             // pNormalMap
             // 
             pNormalMap.ButtonText = "Choose normal map";
             pNormalMap.DefaultTexture = "brickwall_normal.jpg";
-            pNormalMap.FilePath = null;
             pNormalMap.Location = new Point(0, 128);
             pNormalMap.Margin = new Padding(0);
             pNormalMap.Name = "pNormalMap";
