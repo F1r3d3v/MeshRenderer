@@ -73,6 +73,7 @@ namespace GK1_MeshEditor
             }
             return 3 * tangentU;
         }
+
         private Vector3 CalculatePv(float[] bernU, float[] bernV)
         {
             Vector3 tangentV = Vector3.Zero;

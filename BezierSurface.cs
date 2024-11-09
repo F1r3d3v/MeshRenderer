@@ -26,7 +26,8 @@ namespace GK1_MeshEditor
 
         public void GenerateMesh(int subdivisions)
         {
-            Mesh = new Mesh(ControlPoints, subdivisions);
+            if (subdivisions > 0)
+                Mesh = new Mesh(ControlPoints, subdivisions);
         }
 
         public static BezierSurface LoadFromFile(string fileName)
@@ -50,7 +51,7 @@ namespace GK1_MeshEditor
                 int i = count / 4;
                 int j = count % 4;
 
-                surface.ControlPoints[j,i] = p;
+                surface.ControlPoints[j, i] = p;
                 count++;
             }
 

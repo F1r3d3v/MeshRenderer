@@ -36,6 +36,9 @@ namespace GK1_MeshEditor
 
             surfaceTransform.BezierSurface = bezierSurface;
             scene.graphicsObjects.Add(bezierSurface);
+            renderCanvas.Paint += OnPaint!;
+            Model.DensityChanged += Model_DensityChanged;
+            InitBindings();
 
             animationTimer = new Timer(1000.0 / 60.0);
             animationTimer.Elapsed += Timer_Tick!;
@@ -44,11 +47,6 @@ namespace GK1_MeshEditor
             refreshTimer.Elapsed += (s, e) => renderCanvas.Invalidate();
 
             shader.BezierSurface = bezierSurface;
-
-            renderCanvas.Paint += OnPaint!;
-            Model.DensityChanged += Model_DensityChanged;
-
-            InitBindings();
 
             bmpLive = new DirectBitmap(renderCanvas.Width, renderCanvas.Height);
             bmpLast = new DirectBitmap(renderCanvas.Width, renderCanvas.Height);

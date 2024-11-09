@@ -33,7 +33,7 @@ namespace GK1_MeshEditor
                 Util.AssignVectorToMatrix(ref matrix, vertex.Pv, 1);
                 Util.AssignVectorToMatrix(ref matrix, vertex.N, 2);
 
-                normal = Vector3.Normalize(Vector3.TransformNormal(offset, matrix));
+                normal = Vector3.Normalize(Vector3.TransformNormal(offset, Matrix4x4.Transpose(matrix)));
             }
 
             int[] finalColor = new int[3];

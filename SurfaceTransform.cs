@@ -75,10 +75,10 @@ namespace GK1_MeshEditor
                 var (originalPosition, originalPu, originalPv, originalN) = OriginalVertexData[i];
 
                 Vector3 transformedPosition = Vector3.Transform(originalPosition, _transform);
-                Vector3 transformedPu = Vector3.TransformNormal(originalPu, _transform);
-                Vector3 transformedPv = Vector3.TransformNormal(originalPv, _transform);
-                Vector3 transformedN = Vector3.TransformNormal(originalN, _transform);
-
+                Vector3 transformedPu = Vector3.TransformNormal(originalPu, (_transform));
+                Vector3 transformedPv = Vector3.TransformNormal(originalPv, (_transform));
+                Vector3 transformedN = Vector3.TransformNormal(originalN, (_transform));
+                
                 vertex.P = transformedPosition;
                 vertex.Pu = Vector3.Normalize(transformedPu);
                 vertex.Pv = Vector3.Normalize(transformedPv);
