@@ -50,7 +50,7 @@ namespace GK1_MeshEditor
                 int i = count / 4;
                 int j = count % 4;
 
-                surface.ControlPoints[i, j] = p;
+                surface.ControlPoints[j,i] = p;
                 count++;
             }
 

@@ -51,15 +51,15 @@ namespace GK1_MeshEditor
             float[] bernV1 = Bernstein(3, v);
             float[] bernV2 = Bernstein(2, v);
 
-            Vector3 p = CalculatePosition(u, v, bernU1, bernV1);
-            Vector3 pu = CalculatePu(u, v, bernU2, bernV1);
-            Vector3 pv = CalculatePv(u, v, bernU1, bernV2);
+            Vector3 p = CalculatePosition(bernU1, bernV1);
+            Vector3 pu = CalculatePu(bernU2, bernV1);
+            Vector3 pv = CalculatePv(bernU1, bernV2);
             Vector2 uv = new Vector2(u, v);
 
             return new Vertex(p, pu, pv, uv);
         }
 
-        private Vector3 CalculatePu(float u, float v, float[] bernU, float[] bernV)
+        private Vector3 CalculatePu(float[] bernU, float[] bernV)
         {
             Vector3 tangentU = Vector3.Zero;
 
@@ -73,7 +73,7 @@ namespace GK1_MeshEditor
             }
             return 3 * tangentU;
         }
-        private Vector3 CalculatePv(float u, float v, float[] bernU, float[] bernV)
+        private Vector3 CalculatePv(float[] bernU, float[] bernV)
         {
             Vector3 tangentV = Vector3.Zero;
 
@@ -88,7 +88,7 @@ namespace GK1_MeshEditor
             return 3 * tangentV;
         }
 
-        private Vector3 CalculatePosition(float u, float v, float[] bernU, float[] bernV)
+        private Vector3 CalculatePosition(float[] bernU, float[] bernV)
         {
             Vector3 pos = Vector3.Zero;
 
