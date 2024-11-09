@@ -18,8 +18,8 @@ namespace GK1_MeshEditor
         public Vertex(Vector3 p, Vector3 pu, Vector3 pv, Vector2 uv)
         {
             P = p;
-            Pu = pu;
-            Pv = pv;
+            Pu = Vector3.Normalize(pu);
+            Pv = Vector3.Normalize(pv);
             N = -Vector3.Normalize(Vector3.Cross(pu, pv));
             UV = uv;
         }

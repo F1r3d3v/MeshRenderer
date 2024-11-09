@@ -8,25 +8,13 @@ using System.Threading.Tasks;
 
 namespace GK1_MeshEditor
 {
-    internal class NormalMap
+    internal class NormalMap(string path)
     {
-        private DirectBitmap _normalMap;
-
-        public NormalMap(string path)
-        {
-            Bitmap m = new Bitmap(path);
-            _normalMap = new DirectBitmap(m.Width, m.Height);
-            Graphics g = Graphics.FromImage(_normalMap.Bitmap);
-            g.DrawImage(m, 0, 0);
-        }
+        private Texture _normalMap = new Texture(path);
 
         public Vector3 Sample(float u, float v)
         {
-            u = Math.Clamp(u, 0f, 1f);
-            v = Math.Clamp(v, 0f, 1f);
-            int x = (int)(u * (_normalMap.Width - 1));
-            int y = (int)(v * (_normalMap.Height - 1));
-            Color color = _normalMap.GetPixel(x, y);
+            Color color = _normalMap.Sample(u, v);
 
             float r = color.R / 255f;
             float g = color.G / 255f;

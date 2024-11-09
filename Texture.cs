@@ -23,9 +23,9 @@ namespace GK1_MeshEditor
         public Color Sample(float u, float v)
         {
             u = Math.Clamp(u, 0f, 1f);
-            v = Math.Clamp(v, 0f, 1f);
-            int x = (int)(u * (_texture.Width - 1));
-            int y = (int)(v * (_texture.Height - 1));
+            v = Math.Clamp(1.0f - v, 0f, 1f);
+            int x = (int)Math.Round(u * (_texture.Width - 1));
+            int y = (int)Math.Round(v * (_texture.Height - 1));
             return _texture.GetPixel(x, y);
         }
     }

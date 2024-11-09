@@ -29,10 +29,13 @@ namespace GK1_MeshEditor
         private void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         private bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
         {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
-            OnPropertyChanged(propertyName);
-            return true;
+            lock (this)
+            {
+                if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+                field = value;
+                OnPropertyChanged(propertyName);
+                return true;
+            }
         }
 
         private Vector3 _lightPosition;
@@ -128,5 +131,22 @@ namespace GK1_MeshEditor
                 if (!SetField(ref _isAnimationPlaying, value)) return;
             }
         }
+
+        private RenderState _state;
+
+        public void SetState() => _state = new RenderState(_instance!);
+        public RenderState GetState() => _state;
+    }
+
+    internal struct RenderState(EditorViewModel m)
+    {
+        public int SurfaceDensity = m.SurfaceDensity;
+        public float ZRotation = m.ZRotation;
+        public float XRotation = m.XRotation;
+        public float CoefKd = m.CoefKd;
+        public float CoefKs = m.CoefKs;
+        public float CoefM = m.CoefM;
+        public Vector3 LightPosition = m.LightPosition;
+        public Color LightColor = m.LightColor;
     }
 }

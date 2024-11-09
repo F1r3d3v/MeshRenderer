@@ -29,13 +29,12 @@ namespace GK1_MeshEditor
             return new Vertex(interpolatedP, interpolatedPu, interpolatedPv, interpolatedUV);
         }
 
-        public static Matrix4x4 AssignVectorToMatrix(Matrix4x4 m, Vector3 v, int col)
+        public static void AssignVectorToMatrix(ref Matrix4x4 m, Vector3 v, int col)
         {
             m[0, col] = v.X;
-            m[0, col] = v.Y;
-            m[0, col] = v.Z;
-            m[0, col] = 0.0f;
-            return m;
+            m[1, col] = v.Y;
+            m[2, col] = v.Z;
+            m[3, col] = 0.0f;
         }
 
     }

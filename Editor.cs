@@ -1,6 +1,8 @@
 using GK1_MeshEditor.CustomControls;
 using GK1_PolygonEditor;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Drawing;
 using System.Numerics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -11,58 +13,96 @@ namespace GK1_MeshEditor
 {
     public partial class Editor : Form
     {
-        private BezierSurface bezierSurface = BezierSurface.LoadFromFile("Resources/control_points.txt");
-        private SurfaceTransform surfaceTransform = new SurfaceTransform();
-        UnsafeBitmap bitmap;
-        Renderer renderer;
-        Scene scene;
+        static BezierSurface bezierSurface = BezierSurface.LoadFromFile("Resources/control_points.txt");
+        static SurfaceTransform surfaceTransform = new SurfaceTransform();
         PhongShader shader = new PhongShader();
         DeltaTime deltaTime;
-        EditorViewModel Model { get; } = EditorViewModel.GetInstance();
 
-        private Timer timer;
+        private Timer animationTimer;
+        private Timer refreshTimer;
         private float angle = 0;
         private bool animDirection = true;
+
+        static Scene scene = new Scene();
+        static Renderer? renderer;
+        static DirectBitmap? bmpLive;
+        static DirectBitmap? bmpLast;
+
+        EditorViewModel Model { get; } = EditorViewModel.GetInstance();
 
         public Editor()
         {
             InitializeComponent();
 
             surfaceTransform.BezierSurface = bezierSurface;
-
-            bitmap = new UnsafeBitmap(renderCanvas.Width, renderCanvas.Height);
-            scene = new Scene();
             scene.graphicsObjects.Add(bezierSurface);
 
-            renderer = new Renderer(scene, renderCanvas, bitmap);
+            animationTimer = new Timer(1000.0 / 60.0);
+            animationTimer.Elapsed += Timer_Tick!;
 
-            timer = new Timer(16.6);
-            timer.Elapsed += Timer_Tick!;
+            refreshTimer = new Timer(1000.0 / 60.0);
+            refreshTimer.Elapsed += (s, e) => renderCanvas.Invalidate();
 
             shader.BezierSurface = bezierSurface;
-            renderer.Shader = shader;
 
+            renderCanvas.Paint += OnPaint!;
             Model.DensityChanged += Model_DensityChanged;
-            Model.RotationChanged += Model_RotationChanged;
-            Model.PropertyChanged += (s, e) => renderer.RenderScene();
-            pTexture.TextureChanged += (s, e) => renderer.RenderScene();
-            pNormalMap.TextureChanged += (s, e) => renderer.RenderScene();
 
             InitBindings();
+
+            bmpLive = new DirectBitmap(renderCanvas.Width, renderCanvas.Height);
+            bmpLast = new DirectBitmap(renderCanvas.Width, renderCanvas.Height);
+            renderer = new Renderer(scene, renderCanvas, bmpLive, bmpLast);
+            renderer.Shader = shader;
+
+            var renderThread = new Thread(new ThreadStart(RenderLoop));
+            renderThread.Start();
+            refreshTimer.Start();
         }
 
-        private void Model_RotationChanged()
+        private static void RenderLoop()
         {
-            surfaceTransform.Rotate(Model.XRotation, 0, Model.ZRotation);
-            surfaceTransform.ApplyTransformations();
+            double maxFPS = 60;
+            double minFramePeriodMsec = 1000.0 / maxFPS;
+
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            while (true)
+            {
+                lock (EditorViewModel.GetInstance())
+                    EditorViewModel.GetInstance().SetState();
+
+                RenderState s = EditorViewModel.GetInstance().GetState();
+
+                Array.Copy(surfaceTransform.OriginalControlPoints, bezierSurface.ControlPoints, 16);
+                bezierSurface.GenerateMesh(s.SurfaceDensity);
+                surfaceTransform.BezierSurface = bezierSurface;
+
+                surfaceTransform.Rotate(s.XRotation, 0, s.ZRotation);
+                surfaceTransform.ApplyTransformations();
+                scene.Render(renderer!);
+                renderer!.DrawPoint(EditorViewModel.GetInstance().LightPosition, Brushes.Black);
+
+                lock (bmpLast!)
+                {
+                    bmpLast.Dispose();
+                    bmpLast = (DirectBitmap)bmpLive!.Clone();
+                }
+
+                double msToWait = minFramePeriodMsec - stopwatch.ElapsedMilliseconds;
+                if (msToWait > 0)
+                    Thread.Sleep((int)msToWait);
+                stopwatch.Restart();
+            }
+        }
+
+        private void OnPaint(object sender, PaintEventArgs e)
+        {
+            lock (bmpLast!)
+                e.Graphics.DrawImage(bmpLast!.Bitmap, 0, 0);
         }
 
         private void Model_DensityChanged()
         {
-            Array.Copy(surfaceTransform.OriginalControlPoints, bezierSurface.ControlPoints, 16);
-            bezierSurface.GenerateMesh(Model.SurfaceDensity);
-            surfaceTransform.BezierSurface = bezierSurface;
-            Model_RotationChanged();
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -104,11 +144,7 @@ namespace GK1_MeshEditor
             cbWireframe.DataBindings.Add(binding);
 
             binding = new Binding("Value", Model, "LightPosition", true, DataSourceUpdateMode.OnPropertyChanged);
-            binding.Parse += (sender, e) =>
-            {
-                lock (EditorViewModel.GetInstance())
-                    e.Value = new Vector3(Model.LightPosition.X, Model.LightPosition.Y, Convert.ToSingle(e.Value!));
-            };
+            binding.Parse += (sender, e) => e.Value = new Vector3(Model.LightPosition.X, Model.LightPosition.Y, Convert.ToSingle(e.Value!));
             binding.Format += (sender, e) => e.Value = Convert.ToInt32(((Vector3)e.Value!).Z);
             csLightZPlane.TrackBar.DataBindings.Add(binding);
 
@@ -136,9 +172,10 @@ namespace GK1_MeshEditor
             if (Model.IsAnimationPlaying)
             {
                 deltaTime = DeltaTime.CreatePoint();
-                timer.Start();
+                animationTimer.Start();
             }
-            else timer.Stop();
+            else
+                animationTimer.Stop();
         }
 
         private void bSurfaceColor_Click(object sender, EventArgs e)
@@ -149,7 +186,6 @@ namespace GK1_MeshEditor
             if (dlg.ShowDialog() == DialogResult.OK)
             {
                 bezierSurface.Color = dlg.Color;
-                renderer.RenderScene();
             }
         }
 
@@ -161,20 +197,17 @@ namespace GK1_MeshEditor
             if (dlg.ShowDialog() == DialogResult.OK)
             {
                 Model.LightColor = dlg.Color;
-                renderer.RenderScene();
             }
         }
 
         private void cbTexture_CheckedChanged(object sender, EventArgs e)
         {
             bezierSurface.Texture = (((CheckBox)sender).Checked) ? new Texture(pTexture.FilePath!) : null;
-            renderer.RenderScene();
         }
 
         private void cbNormalMap_CheckedChanged(object sender, EventArgs e)
         {
             bezierSurface.NormalMap = (((CheckBox)sender).Checked) ? new NormalMap(pNormalMap.FilePath!) : null;
-            renderer.RenderScene();
         }
     }
 }

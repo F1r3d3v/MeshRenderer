@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GK1_MeshEditor
 {
-    public class DirectBitmap : IDisposable
+    public class DirectBitmap : IDisposable, ICloneable
     {
         public Bitmap Bitmap { get; private set; }
         public Int32[] Bits { get; private set; }
@@ -50,6 +50,13 @@ namespace GK1_MeshEditor
             Disposed = true;
             Bitmap.Dispose();
             BitsHandle.Free();
+        }
+
+        public object Clone()
+        {
+            DirectBitmap bitmap = new DirectBitmap(Width, Height);
+            Graphics.FromImage(bitmap.Bitmap).DrawImage(Bitmap, 0, 0);
+            return bitmap;
         }
     }
 }
