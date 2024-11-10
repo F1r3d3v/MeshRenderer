@@ -165,8 +165,8 @@
             csXRotation.Divider = 1;
             csXRotation.Location = new Point(0, 90);
             csXRotation.Margin = new Padding(0);
-            csXRotation.MaxValue = 180;
-            csXRotation.MinValue = -180;
+            csXRotation.MaxValue = 90;
+            csXRotation.MinValue = -90;
             csXRotation.Name = "csXRotation";
             csXRotation.Size = new Size(200, 45);
             csXRotation.SliderText = "X axis rotation";
@@ -228,7 +228,7 @@
             csCoefKd.Size = new Size(200, 45);
             csCoefKd.SliderText = "Coeficient kd";
             csCoefKd.TabIndex = 0;
-            csCoefKd.Value = 50;
+            //csCoefKd.Value = 50;
             // 
             // csCoefKs
             // 
@@ -270,7 +270,6 @@
             csLightZPlane.Size = new Size(200, 45);
             csLightZPlane.SliderText = "Light source Z plane";
             csLightZPlane.TabIndex = 3;
-            csLightZPlane.Value = -300;
             // 
             // flowLayoutPanel5
             // 
@@ -352,7 +351,7 @@
             cbTexture.Location = new Point(5, 29);
             cbTexture.Margin = new Padding(5, 0, 0, 0);
             cbTexture.Name = "cbTexture";
-            cbTexture.Size = new Size(84, 19);
+            cbTexture.Size = new Size(85, 19);
             cbTexture.TabIndex = 6;
             cbTexture.Text = "Use texture";
             cbTexture.UseVisualStyleBackColor = true;

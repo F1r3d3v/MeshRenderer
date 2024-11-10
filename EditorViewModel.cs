@@ -22,9 +22,6 @@ namespace GK1_MeshEditor
             return _instance;
         }
 
-        public event Action? DensityChanged;
-        public event Action? RotationChanged;
-
         public event PropertyChangedEventHandler? PropertyChanged;
         private void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         private bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
@@ -38,7 +35,9 @@ namespace GK1_MeshEditor
             }
         }
 
-        private Vector3 _lightPosition;
+        public object RenderLock = new object();
+
+        private Vector3 _lightPosition = new Vector3(0, 0, 150);
         public Vector3 LightPosition
         {
             get => _lightPosition;
@@ -49,36 +48,33 @@ namespace GK1_MeshEditor
         }
         public Color LightColor { get; set; } = Color.White;
 
-        private int _surfaceDensity;
+        private int _surfaceDensity = 20;
         public int SurfaceDensity
         {
             get => _surfaceDensity;
             set
             {
                 if (!SetField(ref _surfaceDensity, value)) return;
-                DensityChanged?.Invoke();
             }
         }
 
-        private float _xRotation;
+        private float _xRotation = 0;
         public float XRotation
         {
             get => _xRotation;
             set
             {
                 if (!SetField(ref _xRotation, value)) return;
-                RotationChanged?.Invoke();
             }
         }
 
-        private float _zRotation;
+        private float _zRotation = 0;
         public float ZRotation
         {
             get => _zRotation;
             set
             {
                 if (!SetField(ref _zRotation, value)) return;
-                RotationChanged?.Invoke();
             }
         }
 
@@ -92,7 +88,7 @@ namespace GK1_MeshEditor
             }
         }
 
-        private float _coefKd;
+        private float _coefKd = 0.5f;
         public float CoefKd
         {
             get => _coefKd;
@@ -102,7 +98,7 @@ namespace GK1_MeshEditor
             }
         }
 
-        private float _coefKs;
+        private float _coefKs = 0.5f;
         public float CoefKs
         {
             get => _coefKs;
@@ -112,8 +108,8 @@ namespace GK1_MeshEditor
             }
         }
 
-        private float _coefM;
-        public float CoefM
+        private int _coefM = 10;
+        public int CoefM
         {
             get => _coefM;
             set
@@ -132,8 +128,11 @@ namespace GK1_MeshEditor
             }
         }
 
-        private RenderState _state;
+        public Color SurfaceColor = Color.Gray;
+        public Texture? Texture;
+        public NormalMap? NormalMap;
 
+        private RenderState _state;
         public void SetState() => _state = new RenderState(_instance!);
         public RenderState GetState() => _state;
     }
@@ -148,5 +147,8 @@ namespace GK1_MeshEditor
         public float CoefM = m.CoefM;
         public Vector3 LightPosition = m.LightPosition;
         public Color LightColor = m.LightColor;
+        public Color SurfaceColor = m.SurfaceColor;
+        public Texture? Texture = m.Texture;
+        public NormalMap? NormalMap = m.NormalMap;
     }
 }

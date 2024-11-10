@@ -44,6 +44,7 @@ namespace GK1_MeshEditor
                 }
             }
         }
+
         public Vertex Projection(float u, float v)
         {
             float[] bernU1 = Bernstein(3, u);

@@ -10,42 +10,38 @@ namespace GK1_MeshEditor
     {
         private Control _canvas;
         private DirectBitmap _bitmap;
-        private DirectBitmap _bitmapLast;
         private Scene _scene;
         private Graphics _graphics;
         public Vector3 LightSource { get; set; }
         public IShader Shader { get; set; }
 
-        public Renderer(Scene scene, Control canvas, DirectBitmap bitmap, DirectBitmap bitmapLast)
+        public Renderer(Scene scene, Control canvas, DirectBitmap bitmap)
         {
             _scene = scene;
             _canvas = canvas;
             _bitmap = bitmap;
-            _bitmapLast = bitmapLast;
-            //_canvas.Resize += OnResize!;
             _graphics = Graphics.FromImage(_bitmap.Bitmap);
             _graphics.ScaleTransform(1, -1);
             _graphics.TranslateTransform(_canvas.Width / 2, -_canvas.Height / 2);
+        }
+
+        public void Resize(int width, int height)
+        {
+            if (width == 0 && height == 0) return;
+
+            lock (EditorViewModel.GetInstance().RenderLock)
+            {
+                _bitmap.Resize(width, height);
+                _graphics.Dispose();
+                _graphics = Graphics.FromImage(_bitmap.Bitmap);
+                _graphics.ScaleTransform(1, -1);
+                _graphics.TranslateTransform(width / 2, -height / 2);
+            }
         }
 
         public void Clear(Color c)
         {
             _graphics.Clear(c);
-        }
-
-        private void OnResize(object sender, EventArgs e)
-        {
-            if (_canvas.Width == 0 && _canvas.Height == 0) return;
-            lock (_bitmapLast)
-            {
-                _bitmap.Dispose();
-                _bitmap = new DirectBitmap(_canvas.Width, _canvas.Height);
-            }
-            _graphics.Dispose();
-            _graphics = Graphics.FromImage(_bitmap.Bitmap);
-            _graphics.ScaleTransform(1, -1);
-            _graphics.TranslateTransform(_canvas.Width / 2, -_canvas.Height / 2);
-            //RenderScene();
         }
 
         public void DrawWireframe(Mesh mesh)
@@ -191,8 +187,6 @@ namespace GK1_MeshEditor
                 _bitmap.SetPixel(x, y, color);
             }
         }
-
-        //public void RenderScene() => _canvas.Invalidate();
 
         public void Dispose()
         {

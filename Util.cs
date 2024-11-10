@@ -6,6 +6,7 @@ namespace GK1_MeshEditor
     {
         public static Vector3 CartesianToBaricentric(Vector2 p, Vector2 a, Vector2 b, Vector2 c)
         {
+            if (Math.Abs(b.X - c.X) < 1e-5 && Math.Abs(b.Y - c.Y) < 1e-5) return new Vector3(1.0f / 3.0f, 1.0f / 3.0f, 1.0f / 3.0f);
             Vector2 v0 = b - a, v1 = c - a, v2 = p - a;
             float invDen = 1 / (v0.X * v1.Y - v1.X * v0.Y);
             float v = (v2.X * v1.Y - v1.X * v2.Y) * invDen;

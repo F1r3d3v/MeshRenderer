@@ -52,6 +52,17 @@ namespace GK1_MeshEditor
             BitsHandle.Free();
         }
 
+        public void Resize(int width, int height)
+        {
+            Width = width;
+            Height = height;
+            Bits = new Int32[width * height];
+            BitsHandle.Free();
+            BitsHandle = GCHandle.Alloc(Bits, GCHandleType.Pinned);
+            Bitmap = new Bitmap(width, height, width * 4, PixelFormat.Format32bppPArgb, BitsHandle.AddrOfPinnedObject());
+        }
+
+
         public object Clone()
         {
             DirectBitmap bitmap = new DirectBitmap(Width, Height);
