@@ -158,32 +158,46 @@ namespace GK1_MeshEditor
 
                 AET.Sort((x, y) => x.x.CompareTo(y.x));
 
+                // Cache independent variables
+                Vector2 a = new Vector2(verts[0].X, verts[0].Y);
+                Vector2 b = new Vector2(verts[1].X, verts[1].Y);
+                Vector2 c = new Vector2(verts[2].X, verts[2].Y);
+                Vector2 v0 = b - a, v1 = c - a;
+                float invDen = 1 / (v0.X * v1.Y - v1.X * v0.Y);
+
                 for (int i = 0; i < AET.Count - 1; i += 2)
                 {
                     int p1 = (int)Math.Ceiling(AET[i].x);
                     int p2 = (int)Math.Floor(AET[i + 1].x);
                     int y = scanline - 1;
+
                     for (int j = p1; j <= p2; j++)
                     {
                         int point_x = (int)(j + _canvas.Width / 2.0f);
                         int point_y = (int)(_canvas.Height / 2.0f - y);
 
                         Vector2 p = new Vector2(j, y);
-                        Vector2 v1 = new Vector2(verts[0].X, verts[0].Y);
-                        Vector2 v2 = new Vector2(verts[1].X, verts[1].Y);
-                        Vector2 v3 = new Vector2(verts[2].X, verts[2].Y);
-                        Vector3 b = Util.CartesianToBaricentric(p, v1, v2, v3);
 
-                        Vertex v = Util.InterpolateVertex(tri, b);
+                        Vector3 barCoords = new Vector3(1.0f / 3.0f, 1.0f / 3.0f, 1.0f / 3.0f);
+                        if (Math.Abs(b.X - c.X) > 1e-5 || Math.Abs(b.Y - c.Y) > 1e-5)
+                        {
+                            Vector2 v2 = p - a;
+                            float v = (v2.X * v1.Y - v1.X * v2.Y) * invDen;
+                            float w = (v0.X * v2.Y - v2.X * v0.Y) * invDen;
+                            float u = 1.0f - v - w;
+                            barCoords = new Vector3(u, v, w);
+                        }
 
-                        if (v.P.Z >= _zBuffer[point_x, point_y])
+                        Vertex iVert = Util.InterpolateVertex(tri, barCoords);
+
+                        if (iVert.P.Z >= _zBuffer[point_x, point_y])
                             continue;
 
-                        _zBuffer[point_x, point_y] = v.P.Z;
+                        _zBuffer[point_x, point_y] = iVert.P.Z;
 
-                        Color c = Shader.CalculateColor(v);
+                        Color col = Shader.CalculateColor(iVert);
 
-                        DrawPixel(point_x, point_y, c);
+                        DrawPixel(point_x, point_y, col);
                     }
                 }
 

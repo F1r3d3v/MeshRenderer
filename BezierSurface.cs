@@ -12,6 +12,8 @@ namespace GK1_MeshEditor
         public Vector3[,] ControlPoints { get; set; } = new Vector3[4,4];
         public Mesh? Mesh { get; set; }
 
+        public int SurfaceDensity { get; private set; }
+
         public BezierSurface() { }
 
         public BezierSurface(Vector3[,] controlPoints)
@@ -25,7 +27,10 @@ namespace GK1_MeshEditor
         public void GenerateMesh(int subdivisions)
         {
             if (subdivisions > 0)
+            {
+                SurfaceDensity = subdivisions;
                 Mesh = new Mesh(ControlPoints, subdivisions);
+            }
         }
 
         public static BezierSurface LoadFromFile(string fileName)

@@ -11,8 +11,6 @@ namespace GK1_MeshEditor
 {
     public partial class Editor : Form
     {
-        static BezierSurface bezierSurface = BezierSurface.LoadFromFile("Resources/control_points.txt");
-        static SurfaceTransform surfaceTransform = new SurfaceTransform();
         PhongShader shader = new PhongShader();
         DeltaTime? deltaTime;
 
@@ -26,6 +24,8 @@ namespace GK1_MeshEditor
         private static string Title = "Mesh Editor";
         private static bool IsRunning = true;
 
+        static BezierSurface bezierSurface = BezierSurface.LoadFromFile("Resources/control_points.txt");
+        static SurfaceTransform surfaceTransform = new SurfaceTransform();
         static Scene scene = new Scene();
         static Renderer? renderer;
         static DirectBitmap? bmpLive;
@@ -49,6 +49,8 @@ namespace GK1_MeshEditor
         public Editor()
         {
             InitializeComponent();
+            WindowState = FormWindowState.Minimized;
+            Load += (s, e) => WindowState = FormWindowState.Normal;
             Text = Title;
             EditorForm = this;
             Application.ApplicationExit += (s, e) => IsRunning = false;
@@ -75,7 +77,7 @@ namespace GK1_MeshEditor
                 Shader = shader
             };
 
-            Resize += Form_Resize!;
+            Resize += Editor_Resize!;
 
             ResizeBegin += (s, e) =>
             {
@@ -102,7 +104,7 @@ namespace GK1_MeshEditor
         }
 
         FormWindowState LastWindowState = FormWindowState.Normal;
-        private void Form_Resize(object sender, EventArgs e)
+        private void Editor_Resize(object sender, EventArgs e)
         {
             if (WindowState != LastWindowState)
             {
@@ -121,9 +123,6 @@ namespace GK1_MeshEditor
 
         private static void RenderLoop()
         {
-            //double maxFPS = 60;
-            //double minFramePeriodMsec = 1000.0 / maxFPS;
-
             Stopwatch stopwatch = Stopwatch.StartNew();
             while (IsRunning)
             {
@@ -132,20 +131,22 @@ namespace GK1_MeshEditor
 
                 RenderState s = EditorViewModel.GetInstance().GetState();
 
-                Array.Copy(surfaceTransform.OriginalControlPoints, bezierSurface.ControlPoints, 16);
-                bezierSurface.GenerateMesh(s.SurfaceDensity);
-                surfaceTransform.BezierSurface = bezierSurface;
+                if (s.SurfaceDensity != bezierSurface.SurfaceDensity)
+                {
+                    Array.Copy(surfaceTransform.OriginalControlPoints, bezierSurface.ControlPoints, 16);
+                    bezierSurface.GenerateMesh(s.SurfaceDensity);
+                    surfaceTransform.BezierSurface = bezierSurface;
+                }
 
                 surfaceTransform.Rotate(s.XRotation, 0, s.ZRotation);
                 surfaceTransform.ApplyTransformations();
-                
+
                 lock (EditorViewModel.GetInstance().RenderLock)
                 {
                     if (Render)
                     {
                         scene.Render(renderer!);
                         UpdateFPSCounter(stopwatch);
-                        //renderer!.DrawPoint(EditorViewModel.GetInstance().LightPosition, Brushes.Black);
                     }
 
                     lock (bmpLast!)
@@ -155,9 +156,6 @@ namespace GK1_MeshEditor
                     }
                 }
 
-                //double msToWait = minFramePeriodMsec - stopwatch.ElapsedMilliseconds;
-                //if (msToWait > 0)
-                //    Thread.Sleep((int)msToWait);
                 stopwatch.Restart();
             }
         }
@@ -284,7 +282,9 @@ namespace GK1_MeshEditor
             counterElapsed += sw.Elapsed;
             if (counterElapsed >= TimeSpan.FromSeconds(1))
             {
-                EditorForm!.Text = Title + " | FPS: " + fpsCounter.ToString() + " | M: " + (GC.GetTotalMemory(false) / 1048576f).ToString("F") + " MB";
+                EditorForm!.Invoke(() =>
+                    EditorForm.Text = Title + " | FPS: " + fpsCounter.ToString() + " | M: " + (GC.GetTotalMemory(false) / 1048576f).ToString("F") + " MB"
+                );
                 fpsCounter = 0;
                 counterElapsed -= TimeSpan.FromSeconds(1);
             }
