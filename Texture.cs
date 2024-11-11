@@ -1,12 +1,4 @@
-﻿using GK1_PolygonEditor;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GK1_MeshEditor
+﻿namespace GK1_MeshEditor
 {
     internal class Texture
     {
@@ -17,7 +9,7 @@ namespace GK1_MeshEditor
             Bitmap m = new Bitmap(path);
             _texture = new DirectBitmap(m.Width, m.Height);
             Graphics g = Graphics.FromImage(_texture.Bitmap);
-            g.DrawImage(m, 0, 0);
+            g.DrawImage(m, 0, 0, m.Width, m.Height);
         }
 
         public Color Sample(float u, float v)

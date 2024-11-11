@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Numerics;
 
 namespace GK1_MeshEditor
 {
     internal class SurfaceTransform
     {
-        private BezierSurface _bezierSurface;
+        internal required BezierSurface _bezierSurface;
         private Matrix4x4 _transform = Matrix4x4.Identity;
         public List<(Vector3 origP, Vector3 origPu, Vector3 origPv, Vector3 origN)> OriginalVertexData = [];
         public Vector3[,] OriginalControlPoints = new Vector3[4, 4];

@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Windows.Forms.AxHost;
+﻿using System.Numerics;
 
 namespace GK1_MeshEditor
 {

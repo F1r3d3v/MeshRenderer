@@ -1,12 +1,4 @@
-﻿using GK1_MeshEditor.Resources;
-using GK1_PolygonEditor;
-using System;
-using System.ComponentModel;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+﻿using System.Numerics;
 
 namespace GK1_MeshEditor
 {
@@ -17,14 +9,14 @@ namespace GK1_MeshEditor
         private Scene _scene;
         private Graphics _graphics;
         private ZBuffer _zBuffer;
-        public Vector3 LightSource { get; set; }
-        public IShader Shader { get; set; }
+        private IShader _shader;
 
-        public Renderer(Scene scene, Control canvas, DirectBitmap bitmap)
+        public Renderer(Scene scene, Control canvas, DirectBitmap bitmap, IShader shader)
         {
             _scene = scene;
             _canvas = canvas;
             _bitmap = bitmap;
+            _shader = shader;
             _zBuffer = new ZBuffer(canvas.Width, canvas.Height);
             _graphics = Graphics.FromImage(_bitmap.Bitmap);
             _graphics.ScaleTransform(1, -1);
@@ -133,6 +125,13 @@ namespace GK1_MeshEditor
 
             int k = 0;
 
+            // Cache independent variables for baricentric conversion
+            Vector2 a = new Vector2(verts[0].X, verts[0].Y);
+            Vector2 b = new Vector2(verts[1].X, verts[1].Y);
+            Vector2 c = new Vector2(verts[2].X, verts[2].Y);
+            Vector2 v0 = b - a, v1 = c - a;
+            float invDen = 1 / (v0.X * v1.Y - v1.X * v0.Y);
+
             for (int scanline = ymin; scanline <= ymax + 1; ++scanline)
             {
                 while (k < vertCount && (int)Math.Round(verts[ind[k]].Y) == scanline - 1)
@@ -157,13 +156,6 @@ namespace GK1_MeshEditor
                 }
 
                 AET.Sort((x, y) => x.x.CompareTo(y.x));
-
-                // Cache independent variables
-                Vector2 a = new Vector2(verts[0].X, verts[0].Y);
-                Vector2 b = new Vector2(verts[1].X, verts[1].Y);
-                Vector2 c = new Vector2(verts[2].X, verts[2].Y);
-                Vector2 v0 = b - a, v1 = c - a;
-                float invDen = 1 / (v0.X * v1.Y - v1.X * v0.Y);
 
                 for (int i = 0; i < AET.Count - 1; i += 2)
                 {
@@ -190,12 +182,12 @@ namespace GK1_MeshEditor
 
                         Vertex iVert = Util.InterpolateVertex(tri, barCoords);
 
-                        if (iVert.P.Z >= _zBuffer[point_x, point_y])
+                        if (iVert.P.Z <= _zBuffer[point_x, point_y])
                             continue;
 
                         _zBuffer[point_x, point_y] = iVert.P.Z;
 
-                        Color col = Shader.CalculateColor(iVert);
+                        Color col = _shader.CalculateColor(iVert);
 
                         DrawPixel(point_x, point_y, col);
                     }

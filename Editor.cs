@@ -1,10 +1,5 @@
-using GK1_PolygonEditor;
-using System;
 using System.Diagnostics;
-using System.Drawing;
 using System.Numerics;
-using System.Runtime.CompilerServices;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Timer = System.Timers.Timer;
 
 namespace GK1_MeshEditor
@@ -25,7 +20,7 @@ namespace GK1_MeshEditor
         private static bool IsRunning = true;
 
         static BezierSurface bezierSurface = BezierSurface.LoadFromFile("Resources/control_points.txt");
-        static SurfaceTransform surfaceTransform = new SurfaceTransform();
+        static SurfaceTransform surfaceTransform = new SurfaceTransform() { _bezierSurface = bezierSurface };
         static Scene scene = new Scene();
         static Renderer? renderer;
         static DirectBitmap? bmpLive;
@@ -72,10 +67,7 @@ namespace GK1_MeshEditor
 
             bmpLive = new DirectBitmap(renderCanvas.Width, renderCanvas.Height);
             bmpLast = new DirectBitmap(renderCanvas.Width, renderCanvas.Height);
-            renderer = new Renderer(scene, renderCanvas, bmpLive)
-            {
-                Shader = shader
-            };
+            renderer = new Renderer(scene, renderCanvas, bmpLive, shader);
 
             Resize += Editor_Resize!;
 
@@ -163,7 +155,7 @@ namespace GK1_MeshEditor
         private void OnPaint(object sender, PaintEventArgs e)
         {
             lock (bmpLast!)
-                e.Graphics.DrawImage(bmpLast!.Bitmap, 0, 0);
+                e.Graphics.DrawImage(bmpLast!.Bitmap, 0, 0, bmpLast.Width, bmpLast.Height);
         }
 
         private void Timer_Tick(object sender, EventArgs e)

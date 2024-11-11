@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GK1_MeshEditor.Resources
+﻿namespace GK1_MeshEditor
 {
     internal class ZBuffer
     {
@@ -18,13 +12,13 @@ namespace GK1_MeshEditor.Resources
             Height = height;
             zBufferMap = new float[width, height];
             for (int i = 0; i < width * height; i++)
-                zBufferMap[i % width, i / width] = float.MaxValue;
+                zBufferMap[i % width, i / width] = float.MinValue;
         }
 
         public void Clear()
         {
             for (int i = 0; i < Width * Height; i++)
-                zBufferMap[i % Width, i / Width] = float.MaxValue;
+                zBufferMap[i % Width, i / Width] = float.MinValue;
         }
 
         public void Resize(int width, int height)
@@ -33,7 +27,7 @@ namespace GK1_MeshEditor.Resources
             Height = height;
             zBufferMap = new float[width, height];
             for (int i = 0; i < width * height; i++)
-                zBufferMap[i % width, i / width] = float.MaxValue;
+                zBufferMap[i % width, i / width] = float.MinValue;
         }
 
         public float this[int x, int y]
@@ -45,6 +39,7 @@ namespace GK1_MeshEditor.Resources
             }
             set
             {
+                if (x > Width - 1 || x < 0 || y < 0 || y > Height - 1) return;
                 zBufferMap[x, y] = value;
             }
         }

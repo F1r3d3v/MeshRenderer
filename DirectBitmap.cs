@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing.Imaging;
-using System.Linq;
+﻿using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GK1_MeshEditor
 {
@@ -66,7 +61,7 @@ namespace GK1_MeshEditor
         public object Clone()
         {
             DirectBitmap bitmap = new DirectBitmap(Width, Height);
-            Graphics.FromImage(bitmap.Bitmap).DrawImage(Bitmap, 0, 0);
+            Graphics.FromImage(bitmap.Bitmap).DrawImage(Bitmap, 0, 0, Width, Height);
             return bitmap;
         }
     }
