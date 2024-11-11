@@ -1,7 +1,10 @@
 using GK1_PolygonEditor;
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Numerics;
+using System.Runtime.CompilerServices;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Timer = System.Timers.Timer;
 
 namespace GK1_MeshEditor
@@ -17,6 +20,11 @@ namespace GK1_MeshEditor
         private Timer refreshTimer;
         private float angle = 0;
         private bool animDirection = true;
+        private static TimeSpan counterElapsed = TimeSpan.Zero;
+        private static int fpsCounter = 0;
+        private static Form? EditorForm;
+        private static string Title = "Mesh Editor";
+        private static bool IsRunning = true;
 
         static Scene scene = new Scene();
         static Renderer? renderer;
@@ -41,6 +49,9 @@ namespace GK1_MeshEditor
         public Editor()
         {
             InitializeComponent();
+            Text = Title;
+            EditorForm = this;
+            Application.ApplicationExit += (s, e) => IsRunning = false;
 
             surfaceTransform.BezierSurface = bezierSurface;
             scene.graphicsObjects.Add(bezierSurface);
@@ -110,11 +121,11 @@ namespace GK1_MeshEditor
 
         private static void RenderLoop()
         {
-            double maxFPS = 60;
-            double minFramePeriodMsec = 1000.0 / maxFPS;
+            //double maxFPS = 60;
+            //double minFramePeriodMsec = 1000.0 / maxFPS;
 
             Stopwatch stopwatch = Stopwatch.StartNew();
-            while (true)
+            while (IsRunning)
             {
                 lock (EditorViewModel.GetInstance())
                     EditorViewModel.GetInstance().SetState();
@@ -133,7 +144,8 @@ namespace GK1_MeshEditor
                     if (Render)
                     {
                         scene.Render(renderer!);
-                        renderer!.DrawPoint(EditorViewModel.GetInstance().LightPosition, Brushes.Black);
+                        UpdateFPSCounter(stopwatch);
+                        //renderer!.DrawPoint(EditorViewModel.GetInstance().LightPosition, Brushes.Black);
                     }
 
                     lock (bmpLast!)
@@ -143,9 +155,9 @@ namespace GK1_MeshEditor
                     }
                 }
 
-                double msToWait = minFramePeriodMsec - stopwatch.ElapsedMilliseconds;
-                if (msToWait > 0)
-                    Thread.Sleep((int)msToWait);
+                //double msToWait = minFramePeriodMsec - stopwatch.ElapsedMilliseconds;
+                //if (msToWait > 0)
+                //    Thread.Sleep((int)msToWait);
                 stopwatch.Restart();
             }
         }
@@ -264,6 +276,18 @@ namespace GK1_MeshEditor
         {
             lock (EditorViewModel.GetInstance())
                 Model.NormalMap = (((CheckBox)sender).Checked) ? new NormalMap(pNormalMap.FilePath!) : null;
+        }
+
+        private static void UpdateFPSCounter(Stopwatch sw)
+        {
+            fpsCounter++;
+            counterElapsed += sw.Elapsed;
+            if (counterElapsed >= TimeSpan.FromSeconds(1))
+            {
+                EditorForm!.Text = Title + " | FPS: " + fpsCounter.ToString() + " | M: " + (GC.GetTotalMemory(false) / 1048576f).ToString("F") + " MB";
+                fpsCounter = 0;
+                counterElapsed -= TimeSpan.FromSeconds(1);
+            }
         }
     }
 }

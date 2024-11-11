@@ -43,13 +43,5 @@ namespace GK1_MeshEditor
         {
             return Math.Abs(a.X - b.X) < eps && Math.Abs(a.Y - b.Y) < eps && Math.Abs(a.Z - b.Z) < eps;
         }
-
-        public static Matrix4x4 GetReverseZ()
-        {
-            return new Matrix4x4(1, 0, 0, 0,
-                                 0, 1, 0, 0,
-                                 0, 0, -1, 0,
-                                 0, 0, 1, 0);
-        }
     }
 }

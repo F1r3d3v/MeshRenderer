@@ -36,20 +36,16 @@ namespace GK1_MeshEditor.Resources
                 zBufferMap[i % width, i / width] = float.MaxValue;
         }
 
-        public float this[float x, float y]
+        public float this[int x, int y]
         {
             get
             {
-                x = x + Width / 2;
-                y = y + Height / 2;
                 if (x > Width - 1 || x < 0 || y < 0 || y > Height - 1) return float.MinValue;
-                return zBufferMap[(int)MathF.Round(x), (int)MathF.Round(y)];
+                return zBufferMap[x, y];
             }
             set
             {
-                x = x + Width / 2;
-                y = y + Height / 2;
-                zBufferMap[(int)MathF.Round(x), (int)MathF.Round(y)] = value;
+                zBufferMap[x, y] = value;
             }
         }
     }

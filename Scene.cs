@@ -13,14 +13,11 @@ namespace GK1_MeshEditor
         public Color ClearColor { get; set; } = Color.White;
         public void Render(Renderer renderer)
         {
-            Stopwatch sw = Stopwatch.StartNew();
             renderer.Clear(ClearColor);
             foreach (GraphicsObject obj in graphicsObjects)
             {
                 renderer.DrawObject(obj);
             }
-            sw.Stop();
-            Console.WriteLine(1000.0f/sw.ElapsedMilliseconds);
         }
     }
 }

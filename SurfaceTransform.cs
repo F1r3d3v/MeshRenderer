@@ -11,16 +11,9 @@ namespace GK1_MeshEditor
     internal class SurfaceTransform
     {
         private BezierSurface _bezierSurface;
-        private Matrix4x4 _transform;
+        private Matrix4x4 _transform = Matrix4x4.Identity;
         public List<(Vector3 origP, Vector3 origPu, Vector3 origPv, Vector3 origN)> OriginalVertexData = [];
         public Vector3[,] OriginalControlPoints = new Vector3[4, 4];
-
-        public SurfaceTransform()
-        {
-            _transform = Matrix4x4.Identity;
-            _transform.M33 = 1;
-            _transform.M43 = 0;
-        }
 
         public BezierSurface BezierSurface
         {
@@ -98,8 +91,6 @@ namespace GK1_MeshEditor
         public void ResetTransform()
         {
             _transform = Matrix4x4.Identity;
-            _transform.M33 = 1;
-            _transform.M43 = 0;
         }
 
         public void ResetSurfaceToOriginal()

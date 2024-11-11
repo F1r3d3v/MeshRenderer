@@ -3,8 +3,10 @@ using GK1_PolygonEditor;
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace GK1_MeshEditor
 {
@@ -70,10 +72,7 @@ namespace GK1_MeshEditor
 
         public void DrawMesh(Mesh mesh)
         {
-            foreach (Triangle triangle in mesh.Triangles)
-            {
-                Fill(triangle);
-            }
+            Parallel.ForEach(mesh.Triangles, t => Fill(t));
         }
 
         public void DrawPoint(Vector3 point, Brush brush)
@@ -177,10 +176,10 @@ namespace GK1_MeshEditor
 
                         Vertex v = Util.InterpolateVertex(tri, b);
 
-                        if (v.P.Z >= _zBuffer[v.P.X, v.P.Y])
+                        if (v.P.Z >= _zBuffer[point_x, point_y])
                             continue;
 
-                        _zBuffer[v.P.X, v.P.Y] = v.P.Z;
+                        _zBuffer[point_x, point_y] = v.P.Z;
 
                         Color c = Shader.CalculateColor(v);
 
