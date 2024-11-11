@@ -4,6 +4,7 @@ namespace GK1_MeshEditor
 {
     internal static class Util
     {
+        // TODO: Cache independent variables for given triangle
         public static Vector3 CartesianToBaricentric(Vector2 p, Vector2 a, Vector2 b, Vector2 c)
         {
             if (Math.Abs(b.X - c.X) < 1e-5 && Math.Abs(b.Y - c.Y) < 1e-5) return new Vector3(1.0f / 3.0f, 1.0f / 3.0f, 1.0f / 3.0f);
@@ -38,5 +39,17 @@ namespace GK1_MeshEditor
             m[3, col] = 0.0f;
         }
 
+        public static bool CloseTo(this Vector3 a, Vector3 b, double eps)
+        {
+            return Math.Abs(a.X - b.X) < eps && Math.Abs(a.Y - b.Y) < eps && Math.Abs(a.Z - b.Z) < eps;
+        }
+
+        public static Matrix4x4 GetReverseZ()
+        {
+            return new Matrix4x4(1, 0, 0, 0,
+                                 0, 1, 0, 0,
+                                 0, 0, -1, 0,
+                                 0, 0, 1, 0);
+        }
     }
 }

@@ -17,7 +17,7 @@ namespace GK1_MeshEditor
             renderer.Clear(ClearColor);
             foreach (GraphicsObject obj in graphicsObjects)
             {
-                obj.Draw(renderer);
+                renderer.DrawObject(obj);
             }
             sw.Stop();
             Console.WriteLine(1000.0f/sw.ElapsedMilliseconds);

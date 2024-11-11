@@ -1,4 +1,6 @@
-﻿using GK1_PolygonEditor;
+﻿using GK1_MeshEditor.Resources;
+using GK1_PolygonEditor;
+using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Numerics;
@@ -12,6 +14,7 @@ namespace GK1_MeshEditor
         private DirectBitmap _bitmap;
         private Scene _scene;
         private Graphics _graphics;
+        private ZBuffer _zBuffer;
         public Vector3 LightSource { get; set; }
         public IShader Shader { get; set; }
 
@@ -20,9 +23,10 @@ namespace GK1_MeshEditor
             _scene = scene;
             _canvas = canvas;
             _bitmap = bitmap;
+            _zBuffer = new ZBuffer(canvas.Width, canvas.Height);
             _graphics = Graphics.FromImage(_bitmap.Bitmap);
             _graphics.ScaleTransform(1, -1);
-            _graphics.TranslateTransform(_canvas.Width / 2, -_canvas.Height / 2);
+            _graphics.TranslateTransform(canvas.Width / 2, -canvas.Height / 2);
         }
 
         public void Resize(int width, int height)
@@ -32,6 +36,7 @@ namespace GK1_MeshEditor
             lock (EditorViewModel.GetInstance().RenderLock)
             {
                 _bitmap.Resize(width, height);
+                _zBuffer.Resize(width, height);
                 _graphics.Dispose();
                 _graphics = Graphics.FromImage(_bitmap.Bitmap);
                 _graphics.ScaleTransform(1, -1);
@@ -42,6 +47,12 @@ namespace GK1_MeshEditor
         public void Clear(Color c)
         {
             _graphics.Clear(c);
+        }
+
+        public void DrawObject(GraphicsObject obj)
+        {
+            _zBuffer.Clear();
+            obj.Draw(this);
         }
 
         public void DrawWireframe(Mesh mesh)
@@ -165,6 +176,12 @@ namespace GK1_MeshEditor
                         Vector3 b = Util.CartesianToBaricentric(p, v1, v2, v3);
 
                         Vertex v = Util.InterpolateVertex(tri, b);
+
+                        if (v.P.Z >= _zBuffer[v.P.X, v.P.Y])
+                            continue;
+
+                        _zBuffer[v.P.X, v.P.Y] = v.P.Z;
+
                         Color c = Shader.CalculateColor(v);
 
                         DrawPixel(point_x, point_y, c);

@@ -6,6 +6,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Windows.Forms.AxHost;
 
 namespace GK1_MeshEditor
 {
@@ -16,6 +17,7 @@ namespace GK1_MeshEditor
         public Color CalculateColor(Vertex vertex)
         {
             var state = EditorViewModel.GetInstance().GetState();
+            if (vertex.P.CloseTo(state.LightPosition, 1e-5)) return state.SurfaceColor;
 
             Vector3 lightDirection = Vector3.Normalize(state.LightPosition - vertex.P);
             Color color = state.SurfaceColor;

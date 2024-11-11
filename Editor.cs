@@ -30,7 +30,7 @@ namespace GK1_MeshEditor
         {
             if (m.Msg == 0x0112)
             {
-                if (m.WParam == (IntPtr)0xF030 || m.WParam == (IntPtr)0xF120 || m.WParam == (IntPtr)0xF032 || m.WParam == (IntPtr)0xF122) // Maximize and Restore
+                if (m.WParam == (IntPtr)0xF030 || m.WParam == (IntPtr)0xF120 || m.WParam == (IntPtr)0xF032 || m.WParam == (IntPtr)0xF122)
                 {
                     OnResizeBegin(EventArgs.Empty);
                 }
