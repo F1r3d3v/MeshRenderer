@@ -258,14 +258,32 @@ namespace GK1_MeshEditor
 
         private void cbTexture_CheckedChanged(object sender, EventArgs e)
         {
-            lock (EditorViewModel.GetInstance())
-                Model.Texture = (((CheckBox)sender).Checked) ? new Texture(pTexture.FilePath!) : null;
+            if (pTexture.FilePath == null)
+            {
+                cbTexture.CheckedChanged -= cbTexture_CheckedChanged!;
+                cbTexture.Checked = !cbTexture.Checked;
+                cbTexture.CheckedChanged += cbTexture_CheckedChanged!;
+            }
+            else
+            {
+                lock (EditorViewModel.GetInstance())
+                    Model.Texture = (((CheckBox)sender).Checked) ? new Texture(pTexture.FilePath!) : null;
+            }
         }
 
         private void cbNormalMap_CheckedChanged(object sender, EventArgs e)
         {
-            lock (EditorViewModel.GetInstance())
-                Model.NormalMap = (((CheckBox)sender).Checked) ? new NormalMap(pNormalMap.FilePath!) : null;
+            if (pNormalMap.FilePath == null)
+            {
+                cbNormalMap.CheckedChanged -= cbNormalMap_CheckedChanged!;
+                cbNormalMap.Checked = !cbNormalMap.Checked;
+                cbNormalMap.CheckedChanged += cbNormalMap_CheckedChanged!;
+            }
+            else
+            {
+                lock (EditorViewModel.GetInstance())
+                    Model.NormalMap = (((CheckBox)sender).Checked) ? new NormalMap(pNormalMap.FilePath!) : null;
+            }
         }
 
         private static void UpdateFPSCounter(Stopwatch sw)
