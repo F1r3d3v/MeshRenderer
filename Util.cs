@@ -4,12 +4,21 @@ namespace GK1_MeshEditor
 {
     internal static class Util
     {
-        // Non cached version
         public static Vector3 CartesianToBaricentric(Vector2 p, Vector2 a, Vector2 b, Vector2 c)
         {
             if (Math.Abs(b.X - c.X) < 1e-5 && Math.Abs(b.Y - c.Y) < 1e-5) return new Vector3(1.0f / 3.0f, 1.0f / 3.0f, 1.0f / 3.0f);
             Vector2 v0 = b - a, v1 = c - a, v2 = p - a;
             float invDen = 1 / (v0.X * v1.Y - v1.X * v0.Y);
+            float v = (v2.X * v1.Y - v1.X * v2.Y) * invDen;
+            float w = (v0.X * v2.Y - v2.X * v0.Y) * invDen;
+            float u = 1.0f - v - w;
+
+            return new Vector3(u, v, w);
+        }
+
+        public static Vector3 CartesianToBaricentricCached(Vector2 p, Vector2 a, Vector2 v0, Vector2 v1, float invDen)
+        {
+            Vector2 v2 = p - a;
             float v = (v2.X * v1.Y - v1.X * v2.Y) * invDen;
             float w = (v0.X * v2.Y - v2.X * v0.Y) * invDen;
             float u = 1.0f - v - w;
@@ -41,7 +50,8 @@ namespace GK1_MeshEditor
 
         public static bool CloseTo(this Vector3 a, Vector3 b, double eps)
         {
-            return Math.Abs(a.X - b.X) < eps && Math.Abs(a.Y - b.Y) < eps && Math.Abs(a.Z - b.Z) < eps;
+            Vector3 v = Vector3.Abs(a - b);
+            return v.X < eps && v.Y < eps && v.Z < eps;
         }
     }
 }

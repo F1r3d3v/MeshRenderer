@@ -172,13 +172,7 @@ namespace GK1_MeshEditor
 
                         Vector3 barCoords = new Vector3(1.0f / 3.0f, 1.0f / 3.0f, 1.0f / 3.0f);
                         if (Math.Abs(b.X - c.X) > 1e-5 || Math.Abs(b.Y - c.Y) > 1e-5)
-                        {
-                            Vector2 v2 = p - a;
-                            float v = (v2.X * v1.Y - v1.X * v2.Y) * invDen;
-                            float w = (v0.X * v2.Y - v2.X * v0.Y) * invDen;
-                            float u = 1.0f - v - w;
-                            barCoords = new Vector3(u, v, w);
-                        }
+                            barCoords = Util.CartesianToBaricentricCached(p, a, v0, v1, invDen);
 
                         Vertex iVert = Util.InterpolateVertex(tri, barCoords);
 

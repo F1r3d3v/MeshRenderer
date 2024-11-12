@@ -29,22 +29,17 @@ namespace GK1_MeshEditor
                 normal = Vector3.Normalize(Vector3.TransformNormal(offset, Matrix4x4.Transpose(matrix)));
             }
 
-            int[] finalColor = new int[3];
-            for (int i = 0; i < finalColor.Length; i++)
-            {
-                float lightColor = ((state.LightColor.ToArgb() >> 8 * i) & 0xFF) / 255.0f;
-                float surfaceColor = ((color.ToArgb() >> 8 * i) & 0xFF) / 255.0f;
+            Vector3 lightColor = new Vector3(state.LightColor.R, state.LightColor.G, state.LightColor.B) / 255.0f;
+            Vector3 surfaceColor = new Vector3(color.R, color.G, color.B) / 255.0f;
+            Vector3 reflection = 2 * Vector3.Dot(normal, lightDirection) * normal - lightDirection;
+            reflection = Vector3.Normalize(reflection);
 
-                Vector3 reflection = 2 * Vector3.Dot(normal, lightDirection) * normal - lightDirection;
-                reflection = Vector3.Normalize(reflection);
+            float cos1 = Math.Max(Vector3.Dot(normal, lightDirection), 0);
+            float cos2 = Math.Max(Vector3.Dot(_viewDirection, reflection), 0);
+            Vector3 intensity = (lightColor * surfaceColor) * (state.CoefKd * cos1 + state.CoefKs * MathF.Pow(cos2, state.CoefM));
 
-                float cos1 = Math.Max(Vector3.Dot(normal, lightDirection), 0);
-                float cos2 = Math.Max(Vector3.Dot(_viewDirection, reflection), 0);
-                float intensity = Math.Min((lightColor * surfaceColor) * (state.CoefKd * cos1 + state.CoefKs * MathF.Pow(cos2, state.CoefM)), 1.0f);
-                finalColor[i] = (int)(intensity * 255);
-            }
-
-            return Color.FromArgb(finalColor[2], finalColor[1], finalColor[0]);
+            Vector3 finalColor = Vector3.Min(intensity, Vector3.One) * 255;
+            return Color.FromArgb((int)finalColor.X, (int)finalColor.Y, (int)finalColor.Z);
         }
     }
 }
