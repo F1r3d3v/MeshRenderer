@@ -17,6 +17,16 @@ namespace GK1_MeshEditor
             return new Vector3(u, v, w);
         }
 
+        public static Vector3 CartesianToBaricentricCached(Vector2 p, Vector2 a, Vector2 v0, Vector2 v1, float invDen)
+        {
+            Vector2 v2 = p - a;
+            float v = (v2.X * v1.Y - v1.X * v2.Y) * invDen;
+            float w = (v0.X * v2.Y - v2.X * v0.Y) * invDen;
+            float u = 1.0f - v - w;
+
+            return new Vector3(u, v, w);
+        }
+
         public static Vertex InterpolateVertex(Triangle tri, Vector3 baricentricCoords)
         {
             float u = baricentricCoords.X;
@@ -41,7 +51,8 @@ namespace GK1_MeshEditor
 
         public static bool CloseTo(this Vector3 a, Vector3 b, double eps)
         {
-            return Math.Abs(a.X - b.X) < eps && Math.Abs(a.Y - b.Y) < eps && Math.Abs(a.Z - b.Z) < eps;
+            Vector3 v = Vector3.Abs(a - b);
+            return v.X < eps && v.Y < eps && v.Z < eps;
         }
     }
 }

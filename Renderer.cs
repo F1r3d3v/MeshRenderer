@@ -1,4 +1,7 @@
-﻿using System.Numerics;
+﻿using System.Drawing;
+using System.Numerics;
+using System.Runtime.Intrinsics;
+using System.Runtime.Intrinsics.X86;
 
 namespace GK1_MeshEditor
 {
@@ -163,33 +166,74 @@ namespace GK1_MeshEditor
                     int p2 = (int)Math.Floor(AET[i + 1].x);
                     int y = scanline - 1;
 
-                    for (int j = p1; j <= p2; j++)
+                    if (Avx2.IsSupported)
                     {
-                        int point_x = (int)(j + _canvas.Width / 2.0f);
-                        int point_y = (int)(_canvas.Height / 2.0f - y);
-
-                        Vector2 p = new Vector2(j, y);
-
-                        Vector3 barCoords = new Vector3(1.0f / 3.0f, 1.0f / 3.0f, 1.0f / 3.0f);
-                        if (Math.Abs(b.X - c.X) > 1e-5 || Math.Abs(b.Y - c.Y) > 1e-5)
+                        for (int j = p1; j <= p2; j += 8)
                         {
-                            Vector2 v2 = p - a;
-                            float v = (v2.X * v1.Y - v1.X * v2.Y) * invDen;
-                            float w = (v0.X * v2.Y - v2.X * v0.Y) * invDen;
-                            float u = 1.0f - v - w;
-                            barCoords = new Vector3(u, v, w);
+                            Vector256<int> vecJ = Vector256.Create(j, j + 1, j + 2, j + 3, j + 4, j + 5, j + 6, j + 7);
+
+                            Vector256<float> halfCanvasWidth = Vector256.Create(_canvas.Width / 2.0f);
+                            Vector256<float> halfCanvasHeight = Vector256.Create(_canvas.Height / 2.0f);
+                            Vector256<float> yVector = Vector256.Create(y).AsSingle();
+
+                            Vector256<float> pointXVec = Avx2.ConvertToVector256Single(vecJ) + halfCanvasWidth;
+                            Vector256<float> pointYVec = halfCanvasHeight - yVector;
+
+                            Vector256<int> pointXInt = Avx.ConvertToVector256Int32WithTruncation(pointXVec);
+                            Vector256<int> pointYInt = Avx.ConvertToVector256Int32WithTruncation(pointYVec);
+
+                            Vector256<float> barX = Vector256.Create(1.0f / 3.0f);
+                            Vector256<float> barY = Vector256.Create(1.0f / 3.0f);
+                            Vector256<float> barZ = Vector256.Create(1.0f / 3.0f);
+
+                            UtilAVX2.AVX2Vector3 barCoords = new UtilAVX2.AVX2Vector3(barX, barY, barZ);
+
+                            if (Math.Abs(b.X - c.X) > 1e-5 || Math.Abs(b.Y - c.Y) > 1e-5)
+                                barCoords = UtilAVX2.CartesianToBaricentricCachedAVX2(Avx2.ConvertToVector256Single(vecJ), yVector, a, v0, v1, invDen);
+
+                            UtilAVX2.AVX2Vertex iVert = UtilAVX2.InterpolateVertexVec(tri, barCoords);
+
+                            UtilAVX2.AVX2Color col = ((PhongShader)_shader!).CalculateColorSimd(iVert);
+
+                            for (int lane = 0; lane < 8; lane++)
+                            {
+                                int lx = pointXInt.GetElement(lane);
+                                int ly = pointYInt.GetElement(lane);
+
+                                float pz = iVert.Pz.GetElement(lane);
+
+                                if (pz > _zBuffer[lx, ly])
+                                {
+                                    _zBuffer[lx, ly] = pz;
+                                    DrawPixel(lx, ly, col.GetColor(lane));
+                                }
+                            }
                         }
+                    }
+                    else
+                    {
+                        for (int j = p1; j <= p2; j++)
+                        {
+                            int point_x = (int)(j + _canvas.Width / 2.0f);
+                            int point_y = (int)(_canvas.Height / 2.0f - y);
 
-                        Vertex iVert = Util.InterpolateVertex(tri, barCoords);
+                            Vector2 p = new Vector2(j, y);
 
-                        if (iVert.P.Z <= _zBuffer[point_x, point_y])
-                            continue;
+                            Vector3 barCoords = new Vector3(1.0f / 3.0f, 1.0f / 3.0f, 1.0f / 3.0f);
+                            if (Math.Abs(b.X - c.X) > 1e-5 || Math.Abs(b.Y - c.Y) > 1e-5)
+                                barCoords = Util.CartesianToBaricentricCached(p, a, v0, v1, invDen);
 
-                        _zBuffer[point_x, point_y] = iVert.P.Z;
+                            Vertex iVert = Util.InterpolateVertex(tri, barCoords);
 
-                        Color col = _shader.CalculateColor(iVert);
+                            if (iVert.P.Z <= _zBuffer[point_x, point_y])
+                                continue;
 
-                        DrawPixel(point_x, point_y, col);
+                            _zBuffer[point_x, point_y] = iVert.P.Z;
+
+                            Color col = _shader.CalculateColor(iVert);
+
+                            DrawPixel(point_x, point_y, col);
+                        }
                     }
                 }
 

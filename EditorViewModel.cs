@@ -139,7 +139,7 @@ namespace GK1_MeshEditor
         public float XRotation = m.XRotation;
         public float CoefKd = m.CoefKd;
         public float CoefKs = m.CoefKs;
-        public float CoefM = m.CoefM;
+        public int CoefM = m.CoefM;
         public Vector3 LightPosition = m.LightPosition;
         public Color LightColor = m.LightColor;
         public Color SurfaceColor = m.SurfaceColor;
