@@ -4,7 +4,6 @@ namespace GK1_MeshEditor
 {
     internal static class Util
     {
-        // Non cached version
         public static Vector3 CartesianToBaricentric(Vector2 p, Vector2 a, Vector2 b, Vector2 c)
         {
             if (Math.Abs(b.X - c.X) < 1e-5 && Math.Abs(b.Y - c.Y) < 1e-5) return new Vector3(1.0f / 3.0f, 1.0f / 3.0f, 1.0f / 3.0f);

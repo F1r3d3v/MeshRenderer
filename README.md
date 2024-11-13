@@ -1,14 +1,14 @@
 # Mesh Editor
 
-This project is a 3D Mesh Editor developed in C#, featuring a Bezier surface representation, custom rendering pipeline, and support for phong shading and textures with normals. It allows users to manipulate 3D scene, including applying rotation and controlling lighting parameters.
+This project is a 3D Mesh Editor developed in C#, featuring a Bezier surface representation, custom rendering pipeline, and support for phong shading, textures and normal mapping. It allows users to manipulate 3D scene, including applying rotation and controlling lighting parameters.
 
 ## Features
 
-- **Bezier Surface Manipulation**: Easily load, render, and interact with 3D Bezier surfaces defined by a 4x4 control point grid.
+- **Bezier Surface Representation**: Load, render, and interact with 3D Bezier surfaces defined by a 4x4 control point grid.
 
 - **Dynamic Mesh Generation**: Create high-quality meshes from Bezier surfaces with adjustable density.
 
-- **Custom Rendering Pipeline**: A specialized rendering system that includes support for both wireframe and solid shading modes, using an optimized Z-buffer.
+- **Custom Rendering Pipeline**: A specialized rendering system that includes support for both wireframe and solid shading modes, using Z-buffer.
 
 - **Phong Shading Model**: Realistic lighting effects are implemented through Phong shading, which simulates how light interacts with surfaces, including diffuse, and specular reflections.
 
@@ -16,7 +16,7 @@ This project is a 3D Mesh Editor developed in C#, featuring a Bezier surface rep
 
 - **Interactive GUI**: The application provides a responsive GUI for real-time adjustments to 3D models and rendering parameters. Users can toggle wireframes, change textures and normal maps, and adjust lighting directly through the interface.
 
-- **Real-time Transformations**: Transform 3D objects in real-time by applying rotation.
+- **Real-time Transformations**: Transform 3D scene in real-time by applying rotation.
 
 - **Animation Control**: Built-in animation functionality enables dynamic light movement.
 
@@ -50,6 +50,4 @@ This project is a 3D Mesh Editor developed in C#, featuring a Bezier surface rep
 
 1. Ensure the resources folder contains any required assets like control points files for Bezier surfaces.
 
-2. Run the application from your IDE. The editor window will launch, allowing you to interact with Bezier surface, adjust lighting parameters, and apply rotation.
-
----
+2. Run the application from your IDE. The editor window will launch, allowing you to interact with 3D scene, adjusting lighting parameters, and applying rotation.
