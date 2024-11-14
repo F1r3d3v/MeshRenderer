@@ -50,46 +50,36 @@ namespace GK1_MeshEditor
 
             Vector256<float> one = Vector256.Create(1.0f);
             Vector256<float> zero = Vector256.Create(0.0f);
-            Vector256<float> two = Vector256.Create(2.0f);
-            Vector256<float> twofiftyfive = Vector256.Create(255.0f);
 
-            // Light position as SIMD vector
             Vector256<float> lightPosX = Vector256.Create(state.LightPosition.X);
             Vector256<float> lightPosY = Vector256.Create(state.LightPosition.Y);
             Vector256<float> lightPosZ = Vector256.Create(state.LightPosition.Z);
 
-            // Light color as SIMD vector
             Vector256<float> lightColorR = Vector256.Create(state.LightColor.R / 255.0f);
             Vector256<float> lightColorG = Vector256.Create(state.LightColor.G / 255.0f);
             Vector256<float> lightColorB = Vector256.Create(state.LightColor.B / 255.0f);
 
-            // Surface color, default or from texture
             Vector256<float> surfaceColorR = Vector256.Create(state.SurfaceColor.R / 255.0f);
             Vector256<float> surfaceColorG = Vector256.Create(state.SurfaceColor.G / 255.0f);
             Vector256<float> surfaceColorB = Vector256.Create(state.SurfaceColor.B / 255.0f);
 
-            // Sample texture if available
+            UtilAVX2.AVX2Vector3 viewDir = new UtilAVX2.AVX2Vector3(_viewDirection);
+
             if (state.Texture != null)
             {
                 UtilAVX2.AVX2Color sampledColor = state.Texture.SampleSimd(vertex.UVx, vertex.UVy);
-                surfaceColorR = Vector256.Divide(sampledColor.R.AsSingle(), twofiftyfive);
-                surfaceColorG = Vector256.Divide(sampledColor.R.AsSingle(), twofiftyfive);
-                surfaceColorB = Vector256.Divide(sampledColor.R.AsSingle(), twofiftyfive);
+                surfaceColorR = Avx2.ConvertToVector256Single(sampledColor.R) / 255.0f;
+                surfaceColorG = Avx2.ConvertToVector256Single(sampledColor.G) / 255.0f;
+                surfaceColorB = Avx2.ConvertToVector256Single(sampledColor.B) / 255.0f;
             }
 
-            // Calculate light direction and normalize
-            Vector256<float> lightDirX = Avx.Subtract(lightPosX, vertex.Px);
-            Vector256<float> lightDirY = Avx.Subtract(lightPosY, vertex.Py);
-            Vector256<float> lightDirZ = Avx.Subtract(lightPosZ, vertex.Pz);
-            Vector256<float> lightDirLength = Avx.Sqrt(Avx.Add(Avx.Multiply(lightDirX, lightDirX), Avx.Add(Avx.Multiply(lightDirY, lightDirY), Avx.Multiply(lightDirZ, lightDirZ))));
-            lightDirX = Avx.Divide(lightDirX, lightDirLength);
-            lightDirY = Avx.Divide(lightDirY, lightDirLength);
-            lightDirZ = Avx.Divide(lightDirZ, lightDirLength);
+            Vector256<float> lightDirX = lightPosX - vertex.Px;
+            Vector256<float> lightDirY = lightPosY - vertex.Py;
+            Vector256<float> lightDirZ = lightPosZ - vertex.Pz;
+            UtilAVX2.AVX2Vector3 lightDir = new UtilAVX2.AVX2Vector3(lightDirX, lightDirY, lightDirZ);
+            lightDir.Normalize();
 
-            // Normal vector from normal map if available
-            Vector256<float> normalX = vertex.NX;
-            Vector256<float> normalY = vertex.NY;
-            Vector256<float> normalZ = vertex.NZ;
+            UtilAVX2.AVX2Vector3 normal = new UtilAVX2.AVX2Vector3(vertex.NX, vertex.NY, vertex.NZ);
 
             //if (state.NormalMap != null)
             //{
@@ -99,37 +89,27 @@ namespace GK1_MeshEditor
             //    normalZ = Avx.Subtract(Avx.Multiply(normalSample.B, two), one);
             //}
 
-            // Diffuse lighting: max(0, normal • lightDir)
-            Vector256<float> dotNL = Avx.Max(Avx.Add(Avx.Multiply(normalX, lightDirX), Avx.Add(Avx.Multiply(normalY, lightDirY), Avx.Multiply(normalZ, lightDirZ))), zero);
+            Vector256<float> dotNL = Vector256.Max(normal.X * lightDir.X + normal.Y * lightDir.Y + normal.Z * lightDir.Z, zero);
 
-            Vector256<float> diffuseR = Avx.Multiply(Avx.Multiply(lightColorR, surfaceColorR), dotNL);
-            Vector256<float> diffuseG = Avx.Multiply(Avx.Multiply(lightColorG, surfaceColorG), dotNL);
-            Vector256<float> diffuseB = Avx.Multiply(Avx.Multiply(lightColorB, surfaceColorB), dotNL);
+            Vector256<float> reflectionX = 2 * normal.X * dotNL - lightDir.X;
+            Vector256<float> reflectionY = 2 * normal.Y * dotNL - lightDir.Y;
+            Vector256<float> reflectionZ = 2 * normal.Z * dotNL - lightDir.Z;
+            UtilAVX2.AVX2Vector3 reflection = new UtilAVX2.AVX2Vector3(reflectionX, reflectionY, reflectionZ);
+            reflection.Normalize();
 
-            // Reflection vector
-            Vector256<float> reflectionX = Avx.Subtract(Avx.Multiply(two, Avx.Multiply(normalX, dotNL)), lightDirX);
-            Vector256<float> reflectionY = Avx.Subtract(Avx.Multiply(two, Avx.Multiply(normalY, dotNL)), lightDirY);
-            Vector256<float> reflectionZ = Avx.Subtract(Avx.Multiply(two, Avx.Multiply(normalZ, dotNL)), lightDirZ);
+            Vector256<float> dotVR = Vector256.Max(viewDir.X * reflection.X + viewDir.Y * reflection.Y + viewDir.Z * reflection.Z, zero);
+            Vector256<float> dotVRPower = UtilAVX2.AVX2Pow(dotVR, state.CoefM);
+            
 
-            // View direction (assumed constant)
-            Vector256<float> viewDirX = Vector256.Create(_viewDirection.X);
-            Vector256<float> viewDirY = Vector256.Create(_viewDirection.Y);
-            Vector256<float> viewDirZ = Vector256.Create(_viewDirection.Z);
+            Vector256<float> colorFactor = (state.CoefKd * dotNL + state.CoefKs * dotVRPower);
+            Vector256<float> colorR = Vector256.Min((lightColorR * surfaceColorR) * colorFactor, one);
+            Vector256<float> colorG = Vector256.Min((lightColorG * surfaceColorG) * colorFactor, one);
+            Vector256<float> colorB = Vector256.Min((lightColorB * surfaceColorB) * colorFactor, one);
 
-            // Specular lighting: max(0, viewDir • reflection)^m
-            Vector256<float> dotVR = Avx.Max(Avx.Add(Avx.Multiply(viewDirX, reflectionX), Avx.Add(Avx.Multiply(viewDirY, reflectionY), Avx.Multiply(viewDirZ, reflectionZ))), zero);
-            Vector256<float> specularFactor = UtilAVX2.AVX2Pow(dotVR, state.CoefM);
+            Vector256<int> finalR = Avx2.ConvertToVector256Int32(colorR * 255.0f);
+            Vector256<int> finalG = Avx2.ConvertToVector256Int32(colorG * 255.0f);
+            Vector256<int> finalB = Avx2.ConvertToVector256Int32(colorB * 255.0f);
 
-            Vector256<float> specularR = Avx.Multiply(Avx.Multiply(lightColorR, specularFactor), Vector256.Create(state.CoefKs));
-            Vector256<float> specularG = Avx.Multiply(Avx.Multiply(lightColorG, specularFactor), Vector256.Create(state.CoefKs));
-            Vector256<float> specularB = Avx.Multiply(Avx.Multiply(lightColorB, specularFactor), Vector256.Create(state.CoefKs));
-
-            // Combine diffuse and specular components, clamp to [0, 1], then scale to [0, 255]
-            Vector256<byte> finalR = Avx.Multiply(Avx.Min(Avx.Add(diffuseR, specularR), one), Vector256.Create(255.0f)).AsByte();
-            Vector256<byte> finalG = Avx.Multiply(Avx.Min(Avx.Add(diffuseG, specularG), one), Vector256.Create(255.0f)).AsByte();
-            Vector256<byte> finalB = Avx.Multiply(Avx.Min(Avx.Add(diffuseB, specularB), one), Vector256.Create(255.0f)).AsByte();
-
-            // Return the final color as a SimdColor struct
             return new UtilAVX2.AVX2Color(finalR, finalG, finalB);
         }
     }

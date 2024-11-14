@@ -60,7 +60,8 @@ namespace GK1_MeshEditor
         {
             if (Mesh != null)
             {
-                if (EditorViewModel.GetInstance().RenderWireframe)
+                //if (EditorViewModel.GetInstance().RenderWireframe)
+                if (false)
                     renderer.DrawWireframe(Mesh);
                 else
                     renderer.DrawMesh(Mesh);

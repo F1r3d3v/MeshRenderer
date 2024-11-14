@@ -68,6 +68,8 @@ namespace GK1_MeshEditor
         public void DrawMesh(Mesh mesh)
         {
             Parallel.ForEach(mesh.Triangles, t => Fill(t));
+            //foreach (Triangle triangle in mesh.Triangles)
+            //    Fill(triangle);
         }
 
         public void DrawPoint(Vector3 point, Brush brush)
@@ -166,7 +168,7 @@ namespace GK1_MeshEditor
                     int p2 = (int)Math.Floor(AET[i + 1].x);
                     int y = scanline - 1;
 
-                    if (Avx2.IsSupported)
+                    if (EditorViewModel.GetInstance().RenderWireframe)
                     {
                         for (int j = p1; j <= p2; j += 8)
                         {
@@ -174,7 +176,7 @@ namespace GK1_MeshEditor
 
                             Vector256<float> halfCanvasWidth = Vector256.Create(_canvas.Width / 2.0f);
                             Vector256<float> halfCanvasHeight = Vector256.Create(_canvas.Height / 2.0f);
-                            Vector256<float> yVector = Vector256.Create(y).AsSingle();
+                            Vector256<float> yVector = Avx2.ConvertToVector256Single(Vector256.Create(y));
 
                             Vector256<float> pointXVec = Avx2.ConvertToVector256Single(vecJ) + halfCanvasWidth;
                             Vector256<float> pointYVec = halfCanvasHeight - yVector;

@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Numerics;
 using Timer = System.Timers.Timer;
 
@@ -62,7 +64,10 @@ namespace GK1_MeshEditor
             refreshTimer = new Timer(1000.0 / 60.0);
             refreshTimer.Elapsed += (s, e) => renderCanvas.Invalidate();
 
+            if (pTexture.DefaultTexture == string.Empty) cbTexture.Enabled = false;
             pTexture.TextureChanged += (s, e) => Model.Texture = (cbTexture.Checked) ? new Texture(pTexture.FilePath!) : null;
+
+            if (pNormalMap.DefaultTexture == string.Empty) cbNormalMap.Enabled = false;
             pNormalMap.TextureChanged += (s, e) => Model.NormalMap = (cbNormalMap.Checked) ? new NormalMap(pNormalMap.FilePath!) : null;
 
             bmpLive = new DirectBitmap(renderCanvas.Width, renderCanvas.Height);
@@ -138,7 +143,6 @@ namespace GK1_MeshEditor
                     if (Render)
                     {
                         scene.Render(renderer!);
-                        UpdateFPSCounter(stopwatch);
                     }
 
                     lock (bmpLast!)
@@ -148,12 +152,17 @@ namespace GK1_MeshEditor
                     }
                 }
 
-                stopwatch.Restart();
+                UpdateFPSCounter(stopwatch);
             }
         }
 
         private void OnPaint(object sender, PaintEventArgs e)
         {
+            e.Graphics.CompositingMode = CompositingMode.SourceCopy;
+            e.Graphics.CompositingQuality = CompositingQuality.HighSpeed;
+            e.Graphics.PixelOffsetMode = PixelOffsetMode.None;
+            e.Graphics.SmoothingMode = SmoothingMode.None;
+            e.Graphics.InterpolationMode = InterpolationMode.Default;
             lock (bmpLast!)
                 e.Graphics.DrawImage(bmpLast!.Bitmap, 0, 0, bmpLast.Width, bmpLast.Height);
         }
@@ -258,32 +267,14 @@ namespace GK1_MeshEditor
 
         private void cbTexture_CheckedChanged(object sender, EventArgs e)
         {
-            if (pTexture.FilePath == null)
-            {
-                cbTexture.CheckedChanged -= cbTexture_CheckedChanged!;
-                cbTexture.Checked = !cbTexture.Checked;
-                cbTexture.CheckedChanged += cbTexture_CheckedChanged!;
-            }
-            else
-            {
-                lock (EditorViewModel.GetInstance())
-                    Model.Texture = (((CheckBox)sender).Checked) ? new Texture(pTexture.FilePath!) : null;
-            }
+            lock (EditorViewModel.GetInstance())
+                Model.Texture = (((CheckBox)sender).Checked) ? new Texture(pTexture.FilePath!) : null;
         }
 
         private void cbNormalMap_CheckedChanged(object sender, EventArgs e)
         {
-            if (pNormalMap.FilePath == null)
-            {
-                cbNormalMap.CheckedChanged -= cbNormalMap_CheckedChanged!;
-                cbNormalMap.Checked = !cbNormalMap.Checked;
-                cbNormalMap.CheckedChanged += cbNormalMap_CheckedChanged!;
-            }
-            else
-            {
-                lock (EditorViewModel.GetInstance())
-                    Model.NormalMap = (((CheckBox)sender).Checked) ? new NormalMap(pNormalMap.FilePath!) : null;
-            }
+            lock (EditorViewModel.GetInstance())
+                Model.NormalMap = (((CheckBox)sender).Checked) ? new NormalMap(pNormalMap.FilePath!) : null;
         }
 
         private static void UpdateFPSCounter(Stopwatch sw)
@@ -298,6 +289,7 @@ namespace GK1_MeshEditor
                 fpsCounter = 0;
                 counterElapsed -= TimeSpan.FromSeconds(1);
             }
+            sw.Restart();
         }
     }
 }

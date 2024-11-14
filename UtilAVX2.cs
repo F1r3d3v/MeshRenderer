@@ -63,130 +63,44 @@ namespace GK1_MeshEditor
         public static AVX2Vertex InterpolateVertexVec(Triangle tri, AVX2Vector3 v)
         {
             // Interpolate position P
-            Vector256<float> interpPx = Avx.Add(
-                Avx.Add(
-                    Avx.Multiply(v.X, Vector256.Create(tri.V1.P.X)),
-                    Avx.Multiply(v.Y, Vector256.Create(tri.V2.P.X))
-                ),
-                Avx.Multiply(v.Z, Vector256.Create(tri.V3.P.X))
-            );
-
-            Vector256<float> interpPy = Avx.Add(
-                Avx.Add(
-                    Avx.Multiply(v.X, Vector256.Create(tri.V1.P.Y)),
-                    Avx.Multiply(v.Y, Vector256.Create(tri.V2.P.Y))
-                ),
-                Avx.Multiply(v.Z, Vector256.Create(tri.V3.P.Y))
-            );
-
-            Vector256<float> interpPz = Avx.Add(
-                Avx.Add(
-                    Avx.Multiply(v.X, Vector256.Create(tri.V1.P.Z)),
-                    Avx.Multiply(v.Y, Vector256.Create(tri.V2.P.Z))
-                ),
-                Avx.Multiply(v.Z, Vector256.Create(tri.V3.P.Z))
-            );
+            Vector256<float> interpPx = v.X * tri.V1.P.X + v.Y * tri.V2.P.X + v.Z * tri.V3.P.X;
+            Vector256<float> interpPy = v.X * tri.V1.P.Y + v.Y * tri.V2.P.Y + v.Z * tri.V3.P.Y;
+            Vector256<float> interpPz = v.X * tri.V1.P.Z + v.Y * tri.V2.P.Z + v.Z * tri.V3.P.Z;
 
             // Interpolate Pu
-            Vector256<float> interpPuX = Avx.Add(
-                Avx.Add(
-                    Avx.Multiply(v.X, Vector256.Create(tri.V1.Pu.X)),
-                    Avx.Multiply(v.Y, Vector256.Create(tri.V2.Pu.X))
-                ),
-                Avx.Multiply(v.Z, Vector256.Create(tri.V3.Pu.X))
-            );
-
-            Vector256<float> interpPuY = Avx.Add(
-                Avx.Add(
-                    Avx.Multiply(v.X, Vector256.Create(tri.V1.Pu.Y)),
-                    Avx.Multiply(v.Y, Vector256.Create(tri.V2.Pu.Y))
-                ),
-                Avx.Multiply(v.Z, Vector256.Create(tri.V3.Pu.Y))
-            );
-
-            Vector256<float> interpPuZ = Avx.Add(
-                Avx.Add(
-                    Avx.Multiply(v.X, Vector256.Create(tri.V1.Pu.Z)),
-                    Avx.Multiply(v.Y, Vector256.Create(tri.V2.Pu.Z))
-                ),
-                Avx.Multiply(v.Z, Vector256.Create(tri.V3.Pu.Z))
-            );
+            Vector256<float> interpPuX = v.X * tri.V1.Pu.X + v.Y * tri.V2.Pu.X + v.Z * tri.V3.Pu.X;
+            Vector256<float> interpPuY = v.X * tri.V1.Pu.Y + v.Y * tri.V2.Pu.Y + v.Z * tri.V3.Pu.Y;
+            Vector256<float> interpPuZ = v.X * tri.V1.Pu.Z + v.Y * tri.V2.Pu.Z + v.Z * tri.V3.Pu.Z;
+            AVX2Vector3 interpPu = new AVX2Vector3(interpPuX, interpPuY, interpPuZ);
+            interpPu.Normalize();
 
             // Interpolate Pv
-            Vector256<float> interpPvX = Avx.Add(
-                Avx.Add(
-                    Avx.Multiply(v.X, Vector256.Create(tri.V1.Pv.X)),
-                    Avx.Multiply(v.Y, Vector256.Create(tri.V2.Pv.X))
-                ),
-                Avx.Multiply(v.Z, Vector256.Create(tri.V3.Pv.X))
-            );
-
-            Vector256<float> interpPvY = Avx.Add(
-                Avx.Add(
-                    Avx.Multiply(v.X, Vector256.Create(tri.V1.Pv.Y)),
-                    Avx.Multiply(v.Y, Vector256.Create(tri.V2.Pv.Y))
-                ),
-                Avx.Multiply(v.Z, Vector256.Create(tri.V3.Pv.Y))
-            );
-
-            Vector256<float> interpPvZ = Avx.Add(
-                Avx.Add(
-                    Avx.Multiply(v.X, Vector256.Create(tri.V1.Pv.Z)),
-                    Avx.Multiply(v.Y, Vector256.Create(tri.V2.Pv.Z))
-                ),
-                Avx.Multiply(v.Z, Vector256.Create(tri.V3.Pv.Z))
-            );
+            Vector256<float> interpPvX = v.X * tri.V1.Pv.X + v.Y * tri.V2.Pv.X + v.Z * tri.V3.Pv.X;
+            Vector256<float> interpPvY = v.X * tri.V1.Pv.Y + v.Y * tri.V2.Pv.Y + v.Z * tri.V3.Pv.Y;
+            Vector256<float> interpPvZ = v.X * tri.V1.Pv.Z + v.Y * tri.V2.Pv.Z + v.Z * tri.V3.Pv.Z;
+            AVX2Vector3 interpPv = new AVX2Vector3(interpPvX, interpPvY, interpPvZ);
+            interpPu.Normalize();
 
             // Interpolate N
-            Vector256<float> interpNX = Avx.Add(
-                Avx.Add(
-                    Avx.Multiply(v.X, Vector256.Create(tri.V1.N.X)),
-                    Avx.Multiply(v.Y, Vector256.Create(tri.V2.N.X))
-                ),
-                Avx.Multiply(v.Z, Vector256.Create(tri.V3.N.X))
-            );
-
-            Vector256<float> interpNY = Avx.Add(
-                Avx.Add(
-                    Avx.Multiply(v.X, Vector256.Create(tri.V1.N.Y)),
-                    Avx.Multiply(v.Y, Vector256.Create(tri.V2.N.Y))
-                ),
-                Avx.Multiply(v.Z, Vector256.Create(tri.V3.Pv.Y))
-            );
-
-            Vector256<float> interpNZ = Avx.Add(
-                Avx.Add(
-                    Avx.Multiply(v.X, Vector256.Create(tri.V1.N.Z)),
-                    Avx.Multiply(v.Y, Vector256.Create(tri.V2.N.Z))
-                ),
-                Avx.Multiply(v.Z, Vector256.Create(tri.V3.N.Z))
-            );
+            Vector256<float> interpNX = v.X * tri.V1.N.X + v.Y * tri.V2.N.X + v.Z * tri.V3.N.X;
+            Vector256<float> interpNY = v.X * tri.V1.N.Y + v.Y * tri.V2.N.Y + v.Z * tri.V3.N.Y;
+            Vector256<float> interpNZ = v.X * tri.V1.N.Z + v.Y * tri.V2.N.Z + v.Z * tri.V3.N.Z;
+            AVX2Vector3 interpN = new AVX2Vector3(interpNX, interpNY, interpNZ);
+            interpPu.Normalize();
 
             // Interpolate UV
-            Vector256<float> interpUVx = Avx.Add(
-                Avx.Add(
-                    Avx.Multiply(v.X, Vector256.Create(tri.V1.UV.X)),
-                    Avx.Multiply(v.Y, Vector256.Create(tri.V2.UV.X))
-                ),
-                Avx.Multiply(v.Z, Vector256.Create(tri.V3.UV.X))
-            );
-
-            Vector256<float> interpUVy = Avx.Add(
-                Avx.Add(
-                    Avx.Multiply(v.X, Vector256.Create(tri.V1.UV.Y)),
-                    Avx.Multiply(v.Y, Vector256.Create(tri.V2.UV.Y))
-                ),
-                Avx.Multiply(v.Z, Vector256.Create(tri.V3.UV.Y))
-            );
+            Vector256<float> interpUVx = v.X * tri.V1.UV.X + v.Y * tri.V2.UV.X + v.Z * tri.V3.UV.X;
+            Vector256<float> interpUVy = v.X * tri.V1.UV.Y + v.Y * tri.V2.UV.Y + v.Z * tri.V3.UV.Y;
 
             return new AVX2Vertex(
                 interpPx, interpPy, interpPz,
-                interpPuX, interpPuY, interpPuZ,
-                interpPvX, interpPvY, interpPvZ,
-                interpNX, interpNY, interpNZ,
+                interpPu.X, interpPu.Y, interpPu.Z,
+                interpPv.X, interpPv.Y, interpPv.Z,
+                interpN.X, interpN.Y, interpN.Z,
                 interpUVx, interpUVy
             );
         }
+
 
         public struct AVX2Vector3
         {
@@ -199,6 +113,29 @@ namespace GK1_MeshEditor
                 X = x;
                 Y = y;
                 Z = z;
+            }
+
+            public AVX2Vector3(Vector3 v)
+            {
+                X = Vector256.Create(v.X);
+                Y = Vector256.Create(v.Y);
+                Z = Vector256.Create(v.Z);
+            }
+
+            public AVX2Vector3(float x, float y, float z)
+            {
+                X = Vector256.Create(x);
+                Y = Vector256.Create(y);
+                Z = Vector256.Create(z);
+            }
+
+
+            public void Normalize()
+            {
+                Vector256<float> Length = Avx.Sqrt(Avx.Add(Avx.Multiply(X, X), Avx.Add(Avx.Multiply(Y, Y), Avx.Multiply(Z, Z))));
+                X = Avx.Divide(X, Length);
+                Y = Avx.Divide(Y, Length);
+                Z = Avx.Divide(Z, Length);
             }
         }
 
@@ -246,11 +183,11 @@ namespace GK1_MeshEditor
 
         public struct AVX2Color
         {
-            public Vector256<byte> R;
-            public Vector256<byte> G;
-            public Vector256<byte> B;
+            public Vector256<int> R;
+            public Vector256<int> G;
+            public Vector256<int> B;
 
-            public AVX2Color(Vector256<byte> r, Vector256<byte> g, Vector256<byte> b)
+            public AVX2Color(Vector256<int> r, Vector256<int> g, Vector256<int> b)
             {
                 R = r;
                 G = g;
@@ -266,12 +203,11 @@ namespace GK1_MeshEditor
             }
         }
 
-        public static Vector256<float> AVX2Pow(Vector256<float> b, int size)
+        public static Vector256<float> AVX2Pow(Vector256<float> a, int size)
         {
+            Vector256<float> b = a;
             for (int i = 0; i < size; i++)
-            {
-                b = Vector256.Multiply(b, b);
-            }
+                b = Vector256.Multiply(b, a);
 
             return b;
         }

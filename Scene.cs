@@ -1,4 +1,6 @@
-﻿namespace GK1_MeshEditor
+﻿using System.Diagnostics;
+
+namespace GK1_MeshEditor
 {
     internal class Scene
     {

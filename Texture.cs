@@ -27,16 +27,14 @@ namespace GK1_MeshEditor
         public UtilAVX2.AVX2Color SampleSimd(Vector256<float> u, Vector256<float> v)
         {
             u = Vector256.Min(Vector256.Max(u, Vector256.Create(0f)), Vector256.Create(1f));
-            v = Avx.Subtract(Vector256.Create(1f), Vector256.Min(Vector256.Max(v, Vector256.Create(0f)), Vector256.Create(1f)));
+            v = Vector256.Min(Vector256.Max(Vector256.Create(1f) - v, Vector256.Create(0f)), Vector256.Create(1f));
 
-            Vector256<float> width = Vector256.Create((float)_texture.Width - 1);
-            Vector256<float> height = Vector256.Create((float)_texture.Height - 1);
-            Vector256<int> x = Avx.ConvertToVector256Int32WithTruncation(Vector256.Multiply(u, width));
-            Vector256<int> y = Avx.ConvertToVector256Int32WithTruncation(Vector256.Multiply(v, height));
+            Vector256<int> x = Avx.ConvertToVector256Int32WithTruncation(u * (_texture.Width - 1));
+            Vector256<int> y = Avx.ConvertToVector256Int32WithTruncation(v * (_texture.Height - 1));
 
-            Vector256<byte> r = Vector256<byte>.Zero;
-            Vector256<byte> g = Vector256<byte>.Zero;
-            Vector256<byte> b = Vector256<byte>.Zero;
+            Vector256<int> r = Vector256<int>.Zero;
+            Vector256<int> g = Vector256<int>.Zero;
+            Vector256<int> b = Vector256<int>.Zero;
 
             for (int i = 0; i < Vector256<int>.Count; i++)
             {
