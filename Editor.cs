@@ -60,9 +60,12 @@ namespace GK1_MeshEditor
             animationTimer.Elapsed += Timer_Tick!;
 
             refreshTimer = new Timer(1000.0 / 60.0);
-            refreshTimer.Elapsed += (s, e) => renderCanvas.Invalidate();
+            refreshTimer.Elapsed += (s, e) => renderCanvas.Render();
 
+            if (pTexture.DefaultTexture == string.Empty) cbTexture.Enabled = false;
             pTexture.TextureChanged += (s, e) => Model.Texture = (cbTexture.Checked) ? new Texture(pTexture.FilePath!) : null;
+
+            if (pNormalMap.DefaultTexture == string.Empty) cbNormalMap.Enabled = false;
             pNormalMap.TextureChanged += (s, e) => Model.NormalMap = (cbNormalMap.Checked) ? new NormalMap(pNormalMap.FilePath!) : null;
 
             bmpLive = new DirectBitmap(renderCanvas.Width, renderCanvas.Height);
@@ -103,18 +106,21 @@ namespace GK1_MeshEditor
                 LastWindowState = WindowState;
                 if (WindowState == FormWindowState.Maximized || WindowState == FormWindowState.Normal)
                 {
-                    Win32.ResumePainting(renderCanvas.Handle);
                     lock (EditorViewModel.GetInstance().RenderLock)
                     {
                         renderer!.Resize(renderCanvas.Width, renderCanvas.Height);
                         Render = true;
                     }
+                    Win32.ResumePainting(renderCanvas.Handle);
                 }
             }
         }
 
         private static void RenderLoop()
         {
+            double maxFPS = 100;
+            double minFramePeriodMsec = 1000.0 / maxFPS;
+
             Stopwatch stopwatch = Stopwatch.StartNew();
             while (IsRunning)
             {
@@ -133,21 +139,24 @@ namespace GK1_MeshEditor
                 surfaceTransform.Rotate(s.XRotation, 0, s.ZRotation);
                 surfaceTransform.ApplyTransformations();
 
+
                 lock (EditorViewModel.GetInstance().RenderLock)
-                {
                     if (Render)
                     {
                         scene.Render(renderer!);
-                        UpdateFPSCounter(stopwatch);
                     }
 
-                    lock (bmpLast!)
-                    {
-                        bmpLast.Dispose();
-                        bmpLast = (DirectBitmap)bmpLive!.Clone();
-                    }
+                lock (bmpLast!)
+                {
+                    bmpLast.Dispose();
+                    bmpLast = (DirectBitmap)bmpLive!.Clone();
                 }
 
+                double msToWait = minFramePeriodMsec - stopwatch.ElapsedMilliseconds;
+                if (msToWait > 0)
+                    Thread.Sleep((int)msToWait);
+
+                UpdateFPSCounter(stopwatch);
                 stopwatch.Restart();
             }
         }
@@ -258,38 +267,20 @@ namespace GK1_MeshEditor
 
         private void cbTexture_CheckedChanged(object sender, EventArgs e)
         {
-            if (pTexture.FilePath == null)
-            {
-                cbTexture.CheckedChanged -= cbTexture_CheckedChanged!;
-                cbTexture.Checked = !cbTexture.Checked;
-                cbTexture.CheckedChanged += cbTexture_CheckedChanged!;
-            }
-            else
-            {
-                lock (EditorViewModel.GetInstance())
-                    Model.Texture = (((CheckBox)sender).Checked) ? new Texture(pTexture.FilePath!) : null;
-            }
+            lock (EditorViewModel.GetInstance())
+                Model.Texture = (((CheckBox)sender).Checked) ? new Texture(pTexture.FilePath!) : null;
         }
 
         private void cbNormalMap_CheckedChanged(object sender, EventArgs e)
         {
-            if (pNormalMap.FilePath == null)
-            {
-                cbNormalMap.CheckedChanged -= cbNormalMap_CheckedChanged!;
-                cbNormalMap.Checked = !cbNormalMap.Checked;
-                cbNormalMap.CheckedChanged += cbNormalMap_CheckedChanged!;
-            }
-            else
-            {
-                lock (EditorViewModel.GetInstance())
-                    Model.NormalMap = (((CheckBox)sender).Checked) ? new NormalMap(pNormalMap.FilePath!) : null;
-            }
+            lock (EditorViewModel.GetInstance())
+                Model.NormalMap = (((CheckBox)sender).Checked) ? new NormalMap(pNormalMap.FilePath!) : null;
         }
 
         private static void UpdateFPSCounter(Stopwatch sw)
         {
-            fpsCounter++;
             counterElapsed += sw.Elapsed;
+            fpsCounter++;
             if (counterElapsed >= TimeSpan.FromSeconds(1))
             {
                 EditorForm!.Invoke(() =>

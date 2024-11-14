@@ -27,15 +27,12 @@ namespace GK1_MeshEditor
         {
             if (width == 0 && height == 0) return;
 
-            lock (EditorViewModel.GetInstance().RenderLock)
-            {
-                _bitmap.Resize(width, height);
-                _zBuffer.Resize(width, height);
-                _graphics.Dispose();
-                _graphics = Graphics.FromImage(_bitmap.Bitmap);
-                _graphics.ScaleTransform(1, -1);
-                _graphics.TranslateTransform(width / 2, -height / 2);
-            }
+            _bitmap.Resize(width, height);
+            _zBuffer.Resize(width, height);
+            _graphics.Dispose();
+            _graphics = Graphics.FromImage(_bitmap.Bitmap);
+            _graphics.ScaleTransform(1, -1);
+            _graphics.TranslateTransform(width / 2, -height / 2);
         }
 
         public void Clear(Color c)
@@ -64,7 +61,9 @@ namespace GK1_MeshEditor
 
         public void DrawMesh(Mesh mesh)
         {
-            Parallel.ForEach(mesh.Triangles, t => Fill(t));
+            //Parallel.ForEach(mesh.Triangles, t => Fill(t));
+            foreach (Triangle triangle in mesh.Triangles)
+                Fill(triangle);
         }
 
         public void DrawPoint(Vector3 point, Brush brush)
