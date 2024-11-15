@@ -54,6 +54,8 @@
             pTexture = new CustomControls.TexturePicker();
             cbNormalMap = new CheckBox();
             pNormalMap = new CustomControls.TexturePicker();
+            flowLayoutPanel6 = new FlowLayoutPanel();
+            cbControlPoints = new CheckBox();
             panel1.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
             groupBox1.SuspendLayout();
@@ -63,6 +65,7 @@
             flowLayoutPanel5.SuspendLayout();
             groupBox3.SuspendLayout();
             flowLayoutPanel4.SuspendLayout();
+            flowLayoutPanel6.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
@@ -110,7 +113,7 @@
             groupBox1.Location = new Point(5, 0);
             groupBox1.Margin = new Padding(0, 0, 3, 0);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(206, 176);
+            groupBox1.Size = new Size(206, 182);
             groupBox1.TabIndex = 0;
             groupBox1.TabStop = false;
             groupBox1.Text = "Surface";
@@ -122,13 +125,13 @@
             flowLayoutPanel2.Controls.Add(csDensity);
             flowLayoutPanel2.Controls.Add(csZRotation);
             flowLayoutPanel2.Controls.Add(csXRotation);
-            flowLayoutPanel2.Controls.Add(cbWireframe);
+            flowLayoutPanel2.Controls.Add(flowLayoutPanel6);
             flowLayoutPanel2.Dock = DockStyle.Fill;
             flowLayoutPanel2.FlowDirection = FlowDirection.TopDown;
             flowLayoutPanel2.Location = new Point(3, 19);
             flowLayoutPanel2.Margin = new Padding(0);
             flowLayoutPanel2.Name = "flowLayoutPanel2";
-            flowLayoutPanel2.Size = new Size(200, 154);
+            flowLayoutPanel2.Size = new Size(200, 160);
             flowLayoutPanel2.TabIndex = 0;
             // 
             // csDensity
@@ -178,7 +181,7 @@
             cbWireframe.AutoSize = true;
             cbWireframe.Checked = true;
             cbWireframe.CheckState = CheckState.Checked;
-            cbWireframe.Location = new Point(5, 135);
+            cbWireframe.Location = new Point(5, 0);
             cbWireframe.Margin = new Padding(5, 0, 0, 0);
             cbWireframe.Name = "cbWireframe";
             cbWireframe.Size = new Size(81, 19);
@@ -191,7 +194,7 @@
             groupBox2.AutoSize = true;
             groupBox2.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             groupBox2.Controls.Add(flowLayoutPanel3);
-            groupBox2.Location = new Point(5, 176);
+            groupBox2.Location = new Point(5, 182);
             groupBox2.Margin = new Padding(0, 0, 3, 0);
             groupBox2.Name = "groupBox2";
             groupBox2.Size = new Size(206, 260);
@@ -312,7 +315,7 @@
             groupBox3.AutoSize = true;
             groupBox3.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             groupBox3.Controls.Add(flowLayoutPanel4);
-            groupBox3.Location = new Point(5, 436);
+            groupBox3.Location = new Point(5, 442);
             groupBox3.Margin = new Padding(0, 0, 3, 0);
             groupBox3.Name = "groupBox3";
             groupBox3.Size = new Size(206, 211);
@@ -392,6 +395,30 @@
             pNormalMap.Size = new Size(200, 61);
             pNormalMap.TabIndex = 8;
             // 
+            // flowLayoutPanel6
+            // 
+            flowLayoutPanel6.AutoSize = true;
+            flowLayoutPanel6.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            flowLayoutPanel6.Controls.Add(cbWireframe);
+            flowLayoutPanel6.Controls.Add(cbControlPoints);
+            flowLayoutPanel6.Location = new Point(3, 138);
+            flowLayoutPanel6.Name = "flowLayoutPanel6";
+            flowLayoutPanel6.Size = new Size(193, 19);
+            flowLayoutPanel6.TabIndex = 3;
+            // 
+            // cbControlPoints
+            // 
+            cbControlPoints.AutoSize = true;
+            cbControlPoints.Checked = true;
+            cbControlPoints.CheckState = CheckState.Checked;
+            cbControlPoints.Location = new Point(91, 0);
+            cbControlPoints.Margin = new Padding(5, 0, 0, 0);
+            cbControlPoints.Name = "cbControlPoints";
+            cbControlPoints.Size = new Size(102, 19);
+            cbControlPoints.TabIndex = 4;
+            cbControlPoints.Text = "Control Points";
+            cbControlPoints.UseVisualStyleBackColor = true;
+            // 
             // Editor
             // 
             AutoScaleDimensions = new SizeF(96F, 96F);
@@ -419,6 +446,8 @@
             groupBox3.PerformLayout();
             flowLayoutPanel4.ResumeLayout(false);
             flowLayoutPanel4.PerformLayout();
+            flowLayoutPanel6.ResumeLayout(false);
+            flowLayoutPanel6.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -449,5 +478,7 @@
         private CheckBox cbNormalMap;
         private FlowLayoutPanel flowLayoutPanel5;
         private Button bAnimation;
+        private FlowLayoutPanel flowLayoutPanel6;
+        private CheckBox cbControlPoints;
     }
 }

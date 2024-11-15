@@ -66,7 +66,8 @@ namespace GK1_MeshEditor
                     renderer.DrawMesh(Mesh);
             }
 
-            DrawControlPoints(renderer);
+            if (EditorViewModel.GetInstance().RenderControlPoints)
+                DrawControlPoints(renderer);
         }
 
         private void DrawControlPoints(Renderer renderer)

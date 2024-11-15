@@ -30,8 +30,6 @@ namespace GK1_MeshEditor
             }
         }
 
-        public object RenderLock = new object();
-
         private Vector3 _lightPosition = new Vector3(0, 0, 150);
         public Vector3 LightPosition
         {
@@ -83,6 +81,16 @@ namespace GK1_MeshEditor
             }
         }
 
+        private bool _renderControlPoints = true;
+        public bool RenderControlPoints
+        {
+            get => _renderControlPoints;
+            set
+            {
+                if (!SetField(ref _renderControlPoints, value)) return;
+            }
+        }
+
         private float _coefKd = 0.5f;
         public float CoefKd
         {
@@ -124,11 +132,29 @@ namespace GK1_MeshEditor
         }
 
         public Color SurfaceColor = Color.Gray;
-        public Texture? Texture;
-        public NormalMap? NormalMap;
+
+        private Texture? _texture;
+        public Texture? Texture
+        {
+            get => _texture;
+            set
+            {
+                if (!SetField(ref _texture, value)) return;
+            }
+        }
+
+        public NormalMap? _normalMap;
+        public NormalMap? NormalMap
+        {
+            get => _normalMap;
+            set
+            {
+                if (!SetField(ref _normalMap, value)) return;
+            }
+        }
 
         private RenderState _state;
-        public void SetState() => _state = new RenderState(_instance!);
+        public RenderState SetState() => _state = new RenderState(_instance!);
         public RenderState GetState() => _state;
     }
 

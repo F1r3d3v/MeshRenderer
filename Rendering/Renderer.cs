@@ -15,6 +15,7 @@ namespace GK1_MeshEditor
         {
             _scene = scene;
             _canvas = canvas;
+            canvas.Resize += Canvas_Resize;
             _bitmap = bitmap;
             _shader = shader;
             _zBuffer = new ZBuffer(canvas.Width, canvas.Height);
@@ -23,19 +24,18 @@ namespace GK1_MeshEditor
             _graphics.TranslateTransform(canvas.Width / 2, -canvas.Height / 2);
         }
 
-        public void Resize(int width, int height)
+        private void Canvas_Resize(object? sender, EventArgs e)
         {
-            if (width == 0 && height == 0) return;
+            if (_canvas.Width == 0 && _canvas.Height == 0) return;
 
-            lock (EditorViewModel.GetInstance().RenderLock)
-            {
-                _bitmap.Resize(width, height);
-                _zBuffer.Resize(width, height);
-                _graphics.Dispose();
-                _graphics = Graphics.FromImage(_bitmap.Bitmap);
-                _graphics.ScaleTransform(1, -1);
-                _graphics.TranslateTransform(width / 2, -height / 2);
-            }
+            _zBuffer.Resize(_canvas.Width, _canvas.Height);
+            _bitmap.Resize(_canvas.Width, _canvas.Height);
+            _graphics.Dispose();
+            _graphics = Graphics.FromImage(_bitmap.Bitmap);
+            _graphics.ScaleTransform(1, -1);
+            _graphics.TranslateTransform(_canvas.Width / 2, -_canvas.Height / 2);
+
+            RenderScene();
         }
 
         public void Clear(Color c)
@@ -64,7 +64,8 @@ namespace GK1_MeshEditor
 
         public void DrawMesh(Mesh mesh)
         {
-            Parallel.ForEach(mesh.Triangles, t => Fill(t));
+            lock (EditorViewModel.GetInstance())
+                Parallel.ForEach(mesh.Triangles, t => Fill(t));
         }
 
         public void DrawPoint(Vector3 point, Brush brush)
@@ -202,6 +203,11 @@ namespace GK1_MeshEditor
             {
                 _bitmap.SetPixel(x, y, color);
             }
+        }
+
+        public void RenderScene()
+        {
+            _canvas.Invalidate();
         }
 
         public void Dispose()
