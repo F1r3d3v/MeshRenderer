@@ -39,7 +39,16 @@ namespace GK1_MeshEditor
                 if (!SetField(ref _lightPosition, value)) return;
             }
         }
-        public Color LightColor { get; set; } = Color.White;
+
+        private Color _lightColor = Color.White;
+        public Color LightColor
+        {
+            get => _lightColor;
+            set
+            {
+                if (!SetField(ref _lightColor, value)) return;
+            }
+        }
 
         private int _surfaceDensity = 20;
         public int SurfaceDensity
@@ -131,7 +140,15 @@ namespace GK1_MeshEditor
             }
         }
 
-        public Color SurfaceColor = Color.Gray;
+        private Color _surfaceColor = Color.Gray;
+        public Color SurfaceColor
+        {
+            get => _surfaceColor;
+            set
+            {
+                if (!SetField(ref _surfaceColor, value)) return;
+            }
+        }
 
         private Texture? _texture;
         public Texture? Texture

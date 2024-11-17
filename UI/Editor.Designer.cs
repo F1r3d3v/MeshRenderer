@@ -154,8 +154,8 @@
             csZRotation.Divider = 1;
             csZRotation.Location = new Point(0, 45);
             csZRotation.Margin = new Padding(0);
-            csZRotation.MaxValue = 90;
-            csZRotation.MinValue = -90;
+            csZRotation.MaxValue = 45;
+            csZRotation.MinValue = -45;
             csZRotation.Name = "csZRotation";
             csZRotation.Size = new Size(200, 45);
             csZRotation.SliderText = "Z axis rotation";

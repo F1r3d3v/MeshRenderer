@@ -33,10 +33,7 @@ namespace GK1_MeshEditor
             animationTimer = new Timer(1000.0 / 60.0);
             animationTimer.Elapsed += Timer_Tick!;
 
-            if (pTexture.DefaultTexture == string.Empty) cbTexture.Enabled = false;
             pTexture.TextureChanged += (s, e) => Model.Texture = (cbTexture.Checked) ? new Texture(pTexture.FilePath!) : null;
-
-            if (pNormalMap.DefaultTexture == string.Empty) cbNormalMap.Enabled = false;
             pNormalMap.TextureChanged += (s, e) => Model.NormalMap = (cbNormalMap.Checked) ? new NormalMap(pNormalMap.FilePath!) : null;
 
             Model.PropertyChanged += (s, e) => renderer.RenderScene();
@@ -104,6 +101,14 @@ namespace GK1_MeshEditor
 
             binding = new Binding("Checked", Model, "RenderControlPoints", true, DataSourceUpdateMode.OnPropertyChanged);
             cbControlPoints.DataBindings.Add(binding);
+
+            binding = new Binding("Enabled", pTexture, "FilePath", true, DataSourceUpdateMode.OnPropertyChanged);
+            binding.Format += (sender, e) => e.Value = ((string?)e.Value) != null;
+            cbTexture.DataBindings.Add(binding);
+
+            binding = new Binding("Enabled", pNormalMap, "FilePath", true, DataSourceUpdateMode.OnPropertyChanged);
+            binding.Format += (sender, e) => e.Value = ((string?)e.Value) != null;
+            cbNormalMap.DataBindings.Add(binding);
 
             binding = new Binding("Value", Model, "LightPosition", true, DataSourceUpdateMode.OnPropertyChanged);
             binding.Parse += (sender, e) => e.Value = new Vector3(Model.LightPosition.X, Model.LightPosition.Y, Convert.ToSingle(e.Value!));
