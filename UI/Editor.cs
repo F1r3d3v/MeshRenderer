@@ -13,7 +13,7 @@ namespace GK1_MeshEditor
         private bool animDirection = true;
 
         static BezierSurface bezierSurface = BezierSurface.LoadFromFile("Resources/control_points.txt");
-        SurfaceTransform surfaceTransform = new SurfaceTransform() { _bezierSurface = bezierSurface };
+        SurfaceTransform surfaceTransform = new SurfaceTransform(bezierSurface);
         Scene scene = new Scene();
         Renderer? renderer;
         DirectBitmap? bmp;
@@ -24,7 +24,6 @@ namespace GK1_MeshEditor
         {
             InitializeComponent();
 
-            surfaceTransform.BezierSurface = bezierSurface;
             scene.graphicsObjects.Add(bezierSurface);
             renderCanvas.Paint += OnPaint!;
 
@@ -53,13 +52,14 @@ namespace GK1_MeshEditor
 
             if (s.SurfaceDensity != bezierSurface.SurfaceDensity)
             {
-                Array.Copy(surfaceTransform.OriginalControlPoints, bezierSurface.ControlPoints, 16);
+                surfaceTransform.ResetSurfaceToOriginal();
                 bezierSurface.GenerateMesh(s.SurfaceDensity);
-                surfaceTransform.BezierSurface = bezierSurface;
+                surfaceTransform.RefreshMesh();
             }
 
             surfaceTransform.Rotate(s.XRotation, 0, s.ZRotation);
             surfaceTransform.ApplyTransformations();
+            surfaceTransform.ResetTransform();
             scene.Render(renderer!);
 
             e.Graphics.DrawImageUnscaled(bmp!.Bitmap, 0, 0, bmp.Width, bmp.Height);

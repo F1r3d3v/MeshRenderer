@@ -5,7 +5,7 @@ namespace GK1_MeshEditor
     internal class BezierSurface : GraphicsObject
     {
         public Vector3[,] ControlPoints { get; set; } = new Vector3[4,4];
-        public Mesh? Mesh { get; set; }
+        public Mesh Mesh { get; set; } = new Mesh();
 
         public int SurfaceDensity { get; private set; }
 
@@ -24,7 +24,7 @@ namespace GK1_MeshEditor
             if (subdivisions > 0)
             {
                 SurfaceDensity = subdivisions;
-                Mesh = new Mesh(ControlPoints, subdivisions);
+                BezierSurfaceMesh.GenerateMesh(Mesh, ControlPoints, subdivisions);
             }
         }
 
