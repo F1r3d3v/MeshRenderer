@@ -17,6 +17,9 @@ namespace GK1_MeshEditor
             return _instance;
         }
 
+        public delegate void ZPlaneEventHandler(object sender, float z);
+        public event ZPlaneEventHandler? ZPlaneChanged;
+
         public event PropertyChangedEventHandler? PropertyChanged;
         private void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         private bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = "")
@@ -27,16 +30,6 @@ namespace GK1_MeshEditor
                 field = value;
                 OnPropertyChanged(propertyName);
                 return true;
-            }
-        }
-
-        private Vector3 _lightPosition = new Vector3(0, 0, 150);
-        public Vector3 LightPosition
-        {
-            get => _lightPosition;
-            set
-            {
-                if (!SetField(ref _lightPosition, value)) return;
             }
         }
 
@@ -100,6 +93,36 @@ namespace GK1_MeshEditor
             }
         }
 
+        private bool _mainLightEnabled = true;
+        public bool MainLightEnabled
+        {
+            get => _mainLightEnabled;
+            set
+            {
+                if (!SetField(ref _mainLightEnabled, value)) return;
+            }
+        }
+
+        private bool _reflectorsEnabled = false;
+        public bool ReflectorsEnabled
+        {
+            get => _reflectorsEnabled;
+            set
+            {
+                if (!SetField(ref _reflectorsEnabled, value)) return;
+            }
+        }
+
+        private int _reflectorsFocus = 1;
+        public int ReflectorsFocus
+        {
+            get => _reflectorsFocus;
+            set
+            {
+                if (!SetField(ref _reflectorsFocus, value)) return;
+            }
+        }
+
         private float _coefKd = 0.5f;
         public float CoefKd
         {
@@ -130,6 +153,20 @@ namespace GK1_MeshEditor
             }
         }
 
+        private float _zPlane = 150;
+        public float ZPlane
+        {
+            get => _zPlane;
+            set
+            {
+                if (!SetField(ref _zPlane, value)) return;
+                LightPosition.Z = value;
+                ZPlaneChanged?.Invoke(this, value);
+            }
+        }
+
+        public Vector3 LightPosition = new Vector3(0, 0, 150);
+
         private bool _isAnimationPlaying = false;
         public bool IsAnimationPlaying
         {
@@ -140,7 +177,7 @@ namespace GK1_MeshEditor
             }
         }
 
-        private Color _surfaceColor = Color.Gray;
+        private Color _surfaceColor = Color.White;
         public Color SurfaceColor
         {
             get => _surfaceColor;
@@ -182,7 +219,8 @@ namespace GK1_MeshEditor
         public float XRotation = m.XRotation;
         public float CoefKd = m.CoefKd;
         public float CoefKs = m.CoefKs;
-        public float CoefM = m.CoefM;
+        public int CoefM = m.CoefM;
+        public int ReflectorsFocus = m.ReflectorsFocus;
         public Vector3 LightPosition = m.LightPosition;
         public Color LightColor = m.LightColor;
         public Color SurfaceColor = m.SurfaceColor;

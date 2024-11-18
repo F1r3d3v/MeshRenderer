@@ -37,8 +37,8 @@ namespace GK1_MeshEditor.CustomControls
             get => button1.Text; set => button1.Text = value;
         }
 
-        private string? _filePath;
-        public string? FilePath
+        private string _filePath = String.Empty;
+        public string FilePath
         {
             get => _filePath; 
             set

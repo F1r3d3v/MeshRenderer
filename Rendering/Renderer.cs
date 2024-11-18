@@ -66,6 +66,11 @@ namespace GK1_MeshEditor
         {
             lock (EditorViewModel.GetInstance())
                 Parallel.ForEach(mesh.Triangles, t => Fill(t));
+            //lock (EditorViewModel.GetInstance())
+            //{
+            //    foreach (Triangle triangle in mesh.Triangles)
+            //        Fill(triangle);
+            //}
         }
 
         public void DrawPoint(Vector3 point, Brush brush)

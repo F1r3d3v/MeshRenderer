@@ -37,7 +37,9 @@
             csDensity = new CustomControls.CustomSilder();
             csZRotation = new CustomControls.CustomSilder();
             csXRotation = new CustomControls.CustomSilder();
+            flowLayoutPanel6 = new FlowLayoutPanel();
             cbWireframe = new CheckBox();
+            cbControlPoints = new CheckBox();
             groupBox2 = new GroupBox();
             flowLayoutPanel3 = new FlowLayoutPanel();
             csCoefKd = new CustomControls.CustomSilder();
@@ -47,6 +49,9 @@
             flowLayoutPanel5 = new FlowLayoutPanel();
             bLightColor = new Button();
             bAnimation = new Button();
+            cbLightToggle = new CheckBox();
+            cbReflectorsToggle = new CheckBox();
+            csReflectorFocus = new CustomControls.CustomSilder();
             groupBox3 = new GroupBox();
             flowLayoutPanel4 = new FlowLayoutPanel();
             bSurfaceColor = new Button();
@@ -54,18 +59,16 @@
             pTexture = new CustomControls.TexturePicker();
             cbNormalMap = new CheckBox();
             pNormalMap = new CustomControls.TexturePicker();
-            flowLayoutPanel6 = new FlowLayoutPanel();
-            cbControlPoints = new CheckBox();
             panel1.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
             groupBox1.SuspendLayout();
             flowLayoutPanel2.SuspendLayout();
+            flowLayoutPanel6.SuspendLayout();
             groupBox2.SuspendLayout();
             flowLayoutPanel3.SuspendLayout();
             flowLayoutPanel5.SuspendLayout();
             groupBox3.SuspendLayout();
             flowLayoutPanel4.SuspendLayout();
-            flowLayoutPanel6.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
@@ -76,7 +79,7 @@
             panel1.Location = new Point(0, 0);
             panel1.Margin = new Padding(0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1157, 661);
+            panel1.Size = new Size(1157, 761);
             panel1.TabIndex = 0;
             // 
             // renderCanvas
@@ -85,7 +88,7 @@
             renderCanvas.Location = new Point(0, 0);
             renderCanvas.Margin = new Padding(0);
             renderCanvas.Name = "renderCanvas";
-            renderCanvas.Size = new Size(940, 661);
+            renderCanvas.Size = new Size(940, 761);
             renderCanvas.TabIndex = 1;
             renderCanvas.Text = "canvas1";
             // 
@@ -102,7 +105,7 @@
             flowLayoutPanel1.Margin = new Padding(0);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
             flowLayoutPanel1.Padding = new Padding(5, 0, 3, 0);
-            flowLayoutPanel1.Size = new Size(217, 661);
+            flowLayoutPanel1.Size = new Size(217, 761);
             flowLayoutPanel1.TabIndex = 0;
             // 
             // groupBox1
@@ -176,6 +179,17 @@
             csXRotation.TabIndex = 2;
             csXRotation.Value = 0;
             // 
+            // flowLayoutPanel6
+            // 
+            flowLayoutPanel6.AutoSize = true;
+            flowLayoutPanel6.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            flowLayoutPanel6.Controls.Add(cbWireframe);
+            flowLayoutPanel6.Controls.Add(cbControlPoints);
+            flowLayoutPanel6.Location = new Point(3, 138);
+            flowLayoutPanel6.Name = "flowLayoutPanel6";
+            flowLayoutPanel6.Size = new Size(193, 19);
+            flowLayoutPanel6.TabIndex = 3;
+            // 
             // cbWireframe
             // 
             cbWireframe.AutoSize = true;
@@ -189,6 +203,19 @@
             cbWireframe.Text = "Wireframe";
             cbWireframe.UseVisualStyleBackColor = true;
             // 
+            // cbControlPoints
+            // 
+            cbControlPoints.AutoSize = true;
+            cbControlPoints.Checked = true;
+            cbControlPoints.CheckState = CheckState.Checked;
+            cbControlPoints.Location = new Point(91, 0);
+            cbControlPoints.Margin = new Padding(5, 0, 0, 0);
+            cbControlPoints.Name = "cbControlPoints";
+            cbControlPoints.Size = new Size(102, 19);
+            cbControlPoints.TabIndex = 4;
+            cbControlPoints.Text = "Control Points";
+            cbControlPoints.UseVisualStyleBackColor = true;
+            // 
             // groupBox2
             // 
             groupBox2.AutoSize = true;
@@ -197,7 +224,7 @@
             groupBox2.Location = new Point(5, 182);
             groupBox2.Margin = new Padding(0, 0, 3, 0);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(206, 260);
+            groupBox2.Size = new Size(206, 355);
             groupBox2.TabIndex = 1;
             groupBox2.TabStop = false;
             groupBox2.Text = "Lighting";
@@ -211,12 +238,15 @@
             flowLayoutPanel3.Controls.Add(csCoefM);
             flowLayoutPanel3.Controls.Add(csLightZPlane);
             flowLayoutPanel3.Controls.Add(flowLayoutPanel5);
+            flowLayoutPanel3.Controls.Add(cbLightToggle);
+            flowLayoutPanel3.Controls.Add(cbReflectorsToggle);
+            flowLayoutPanel3.Controls.Add(csReflectorFocus);
             flowLayoutPanel3.Dock = DockStyle.Fill;
             flowLayoutPanel3.FlowDirection = FlowDirection.TopDown;
             flowLayoutPanel3.Location = new Point(3, 19);
             flowLayoutPanel3.Margin = new Padding(0);
             flowLayoutPanel3.Name = "flowLayoutPanel3";
-            flowLayoutPanel3.Size = new Size(200, 238);
+            flowLayoutPanel3.Size = new Size(200, 333);
             flowLayoutPanel3.TabIndex = 0;
             // 
             // csCoefKd
@@ -281,11 +311,10 @@
             flowLayoutPanel5.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             flowLayoutPanel5.Controls.Add(bLightColor);
             flowLayoutPanel5.Controls.Add(bAnimation);
-            flowLayoutPanel5.Dock = DockStyle.Fill;
             flowLayoutPanel5.Location = new Point(0, 180);
             flowLayoutPanel5.Margin = new Padding(0);
             flowLayoutPanel5.Name = "flowLayoutPanel5";
-            flowLayoutPanel5.Size = new Size(200, 58);
+            flowLayoutPanel5.Size = new Size(196, 58);
             flowLayoutPanel5.TabIndex = 6;
             // 
             // bLightColor
@@ -310,12 +339,46 @@
             bAnimation.UseVisualStyleBackColor = true;
             bAnimation.Click += bAnimation_Click;
             // 
+            // cbLightToggle
+            // 
+            cbLightToggle.AutoSize = true;
+            cbLightToggle.Location = new Point(3, 241);
+            cbLightToggle.Name = "cbLightToggle";
+            cbLightToggle.Size = new Size(92, 19);
+            cbLightToggle.TabIndex = 7;
+            cbLightToggle.Text = "Toggle Light";
+            cbLightToggle.UseVisualStyleBackColor = true;
+            // 
+            // cbReflectorsToggle
+            // 
+            cbReflectorsToggle.AutoSize = true;
+            cbReflectorsToggle.Location = new Point(3, 266);
+            cbReflectorsToggle.Name = "cbReflectorsToggle";
+            cbReflectorsToggle.Size = new Size(117, 19);
+            cbReflectorsToggle.TabIndex = 8;
+            cbReflectorsToggle.Text = "Toggle Reflectors";
+            cbReflectorsToggle.UseVisualStyleBackColor = true;
+            // 
+            // csReflectorFocus
+            // 
+            csReflectorFocus.BackColor = SystemColors.Control;
+            csReflectorFocus.Divider = 1;
+            csReflectorFocus.Location = new Point(0, 288);
+            csReflectorFocus.Margin = new Padding(0);
+            csReflectorFocus.MaxValue = 25;
+            csReflectorFocus.MinValue = 1;
+            csReflectorFocus.Name = "csReflectorFocus";
+            csReflectorFocus.Size = new Size(200, 45);
+            csReflectorFocus.SliderText = "Reflector Focus";
+            csReflectorFocus.TabIndex = 9;
+            csReflectorFocus.Value = 1;
+            // 
             // groupBox3
             // 
             groupBox3.AutoSize = true;
             groupBox3.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             groupBox3.Controls.Add(flowLayoutPanel4);
-            groupBox3.Location = new Point(5, 442);
+            groupBox3.Location = new Point(5, 537);
             groupBox3.Margin = new Padding(0, 0, 3, 0);
             groupBox3.Name = "groupBox3";
             groupBox3.Size = new Size(206, 211);
@@ -364,6 +427,7 @@
             // pTexture
             // 
             pTexture.ButtonText = "Choose texture";
+            pTexture.FilePath = "";
             pTexture.DefaultTexture = "brickwall.jpg";
             pTexture.Location = new Point(0, 48);
             pTexture.Margin = new Padding(0);
@@ -387,6 +451,7 @@
             // pNormalMap
             // 
             pNormalMap.ButtonText = "Choose normal map";
+            pNormalMap.FilePath = "";
             pNormalMap.DefaultTexture = "brickwall_normal.jpg";
             pNormalMap.Location = new Point(0, 128);
             pNormalMap.Margin = new Padding(0);
@@ -395,38 +460,14 @@
             pNormalMap.Size = new Size(200, 61);
             pNormalMap.TabIndex = 8;
             // 
-            // flowLayoutPanel6
-            // 
-            flowLayoutPanel6.AutoSize = true;
-            flowLayoutPanel6.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            flowLayoutPanel6.Controls.Add(cbWireframe);
-            flowLayoutPanel6.Controls.Add(cbControlPoints);
-            flowLayoutPanel6.Location = new Point(3, 138);
-            flowLayoutPanel6.Name = "flowLayoutPanel6";
-            flowLayoutPanel6.Size = new Size(193, 19);
-            flowLayoutPanel6.TabIndex = 3;
-            // 
-            // cbControlPoints
-            // 
-            cbControlPoints.AutoSize = true;
-            cbControlPoints.Checked = true;
-            cbControlPoints.CheckState = CheckState.Checked;
-            cbControlPoints.Location = new Point(91, 0);
-            cbControlPoints.Margin = new Padding(5, 0, 0, 0);
-            cbControlPoints.Name = "cbControlPoints";
-            cbControlPoints.Size = new Size(102, 19);
-            cbControlPoints.TabIndex = 4;
-            cbControlPoints.Text = "Control Points";
-            cbControlPoints.UseVisualStyleBackColor = true;
-            // 
             // Editor
             // 
             AutoScaleDimensions = new SizeF(96F, 96F);
             AutoScaleMode = AutoScaleMode.Dpi;
-            ClientSize = new Size(1157, 661);
+            ClientSize = new Size(1157, 761);
             Controls.Add(panel1);
             Icon = (Icon)resources.GetObject("$this.Icon");
-            MinimumSize = new Size(1173, 700);
+            MinimumSize = new Size(1173, 800);
             Name = "Editor";
             Text = "Mesh Editor";
             panel1.ResumeLayout(false);
@@ -437,6 +478,8 @@
             groupBox1.PerformLayout();
             flowLayoutPanel2.ResumeLayout(false);
             flowLayoutPanel2.PerformLayout();
+            flowLayoutPanel6.ResumeLayout(false);
+            flowLayoutPanel6.PerformLayout();
             groupBox2.ResumeLayout(false);
             groupBox2.PerformLayout();
             flowLayoutPanel3.ResumeLayout(false);
@@ -446,8 +489,6 @@
             groupBox3.PerformLayout();
             flowLayoutPanel4.ResumeLayout(false);
             flowLayoutPanel4.PerformLayout();
-            flowLayoutPanel6.ResumeLayout(false);
-            flowLayoutPanel6.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -480,5 +521,8 @@
         private Button bAnimation;
         private FlowLayoutPanel flowLayoutPanel6;
         private CheckBox cbControlPoints;
+        private CheckBox cbLightToggle;
+        private CheckBox cbReflectorsToggle;
+        private CustomControls.CustomSilder csReflectorFocus;
     }
 }
