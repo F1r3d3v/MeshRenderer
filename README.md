@@ -22,8 +22,6 @@ This project is a 3D Mesh Editor developed in C#, featuring a Bezier surface rep
 
 - **Light Source Manipulation**: Adjust light properties, including position, color, and intensity, to achieve the desired visual effects. Lighting can be controlled both statically and dynamically, allowing for simulations of changing lighting conditions.
 
-- **Performance Monitoring**: Real-time FPS display and memory usage monitoring.
-
 ## Getting Started
 
 ### Prerequisites
