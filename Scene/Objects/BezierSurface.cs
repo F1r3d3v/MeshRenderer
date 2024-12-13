@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Globalization;
+using System.Numerics;
 
 namespace GK1_MeshEditor
 {
@@ -37,13 +38,13 @@ namespace GK1_MeshEditor
             using var stream = new StreamReader(fileName);
             while (!stream.EndOfStream)
             {
-                cords = stream.ReadLine()?.Split(' ');
+                cords = stream.ReadLine()?.Split(' ', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
                 if (cords == null) break;
                 if (count > 15) throw new InvalidDataException("Control points must be a 4x4 array.");
 
-                float X = float.Parse(cords[0]);
-                float Y = float.Parse(cords[1]);
-                float Z = float.Parse(cords[2]);
+                float X = float.Parse(cords[0], CultureInfo.InvariantCulture);
+                float Y = float.Parse(cords[1], CultureInfo.InvariantCulture);
+                float Z = float.Parse(cords[2], CultureInfo.InvariantCulture);
 
                 Vector3 p = new Vector3(X, Y, Z);
                 int i = count / 4;
