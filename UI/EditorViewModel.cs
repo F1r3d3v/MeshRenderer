@@ -153,7 +153,7 @@ namespace GK1_MeshEditor
             }
         }
 
-        private float _zPlane = 150;
+        private float _zPlane = 300;
         public float ZPlane
         {
             get => _zPlane;
@@ -165,7 +165,7 @@ namespace GK1_MeshEditor
             }
         }
 
-        public Vector3 LightPosition = new Vector3(0, 0, 150);
+        public Vector3 LightPosition = new Vector3(0, 0, 300);
 
         private bool _isAnimationPlaying = false;
         public bool IsAnimationPlaying

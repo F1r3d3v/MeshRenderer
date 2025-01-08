@@ -11,8 +11,15 @@ namespace GK1_MeshEditor
         private float angle = 0;
         private bool animDirection = true;
 
+        private float cubeXangle = 0;
+        private float cubeZangle = 0;
+
         static BezierSurface bezierSurface = BezierSurface.LoadFromFile("Resources/control_points.txt");
         private SurfaceTransform surfaceTransform = new SurfaceTransform(bezierSurface);
+
+        static Cube cube = new Cube(new Vector3(-200, -200, -200), new Vector3(200, 200, 200));
+        private MeshTransform cubeTransform = new MeshTransform(cube.Mesh);
+
         private PhongShader shader;
         private Scene scene;
         Renderer? renderer;
@@ -27,6 +34,7 @@ namespace GK1_MeshEditor
             scene = new Scene();
             shader = new PhongShader(scene);
 
+            scene.graphicsObjects.Add(cube);
             scene.graphicsObjects.Add(bezierSurface);
             Vector3 pos1 = new Vector3(-500, 500, Model.ZPlane);
             Vector3 dir1 = Vector3.Normalize(pos1);
@@ -43,6 +51,7 @@ namespace GK1_MeshEditor
                 light.Position = p;
             });
 
+
             renderCanvas.Paint += OnPaint!;
 
             bmp = new DirectBitmap(renderCanvas.Width, renderCanvas.Height);
@@ -57,6 +66,9 @@ namespace GK1_MeshEditor
             Model.PropertyChanged += (s, e) => renderer.RenderScene();
 
             InitBindings();
+
+            deltaTime = DeltaTime.CreatePoint();
+            animationTimer.Start();
         }
 
         private void OnPaint(object sender, PaintEventArgs e)
@@ -75,6 +87,11 @@ namespace GK1_MeshEditor
             surfaceTransform.Rotate(s.XRotation, 0, s.ZRotation);
             surfaceTransform.ApplyTransformations();
             surfaceTransform.ResetTransform();
+
+            cubeTransform.Rotate(cubeXangle, 0, cubeZangle);
+            cubeTransform.ApplyTransformations();
+            cubeTransform.ResetTransform();
+
             scene.Render(renderer!);
 
             e.Graphics.DrawImageUnscaled(bmp!.Bitmap, 0, 0, bmp.Width, bmp.Height);
@@ -83,20 +100,26 @@ namespace GK1_MeshEditor
         private void Timer_Tick(object sender, EventArgs e)
         {
             float delta = deltaTime!.GetDeltaTime();
-            angle += ((animDirection) ? 1 : -1) * MathF.PI / 2 * delta;
-            float turnGap = 25.0f;
 
-            if (angle > 6 * Math.PI) animDirection = false;
-            else if (angle < 0) animDirection = true;
-
-            lock (EditorViewModel.GetInstance())
+            if (Model.IsAnimationPlaying)
             {
-                Vector3 lightPos = Model.LightPosition;
-                lightPos.X = (turnGap * angle) * (float)Math.Cos(angle);
-                lightPos.Y = (turnGap * angle) * (float)Math.Sin(angle);
-                Model.LightPosition = lightPos;
+                angle += ((animDirection) ? 1 : -1) * MathF.PI / 2 * delta;
+                float turnGap = 25.0f;
+
+                if (angle > 6 * Math.PI) animDirection = false;
+                else if (angle < 0) animDirection = true;
+
+                lock (EditorViewModel.GetInstance())
+                {
+                    Vector3 lightPos = Model.LightPosition;
+                    lightPos.X = (turnGap * angle) * (float)Math.Cos(angle);
+                    lightPos.Y = (turnGap * angle) * (float)Math.Sin(angle);
+                    Model.LightPosition = lightPos;
+                }
             }
 
+            cubeXangle += delta * MathF.PI / 4;
+            cubeZangle += delta * MathF.PI / 8;
             renderer!.RenderScene();
         }
 
@@ -164,14 +187,6 @@ namespace GK1_MeshEditor
         {
             lock (EditorViewModel.GetInstance())
                 Model.IsAnimationPlaying = !Model.IsAnimationPlaying;
-
-            if (Model.IsAnimationPlaying)
-            {
-                deltaTime = DeltaTime.CreatePoint();
-                animationTimer.Start();
-            }
-            else
-                animationTimer.Stop();
         }
 
         private void bSurfaceColor_Click(object sender, EventArgs e)

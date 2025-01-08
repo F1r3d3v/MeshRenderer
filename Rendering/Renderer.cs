@@ -41,11 +41,11 @@ namespace GK1_MeshEditor
         public void Clear(Color c)
         {
             _graphics.Clear(c);
+            _zBuffer.Clear();
         }
 
         public void DrawObject(GraphicsObject obj)
         {
-            _zBuffer.Clear();
             obj.Draw(this);
         }
 
@@ -62,15 +62,21 @@ namespace GK1_MeshEditor
             }
         }
 
-        public void DrawMesh(Mesh mesh)
+        public void DrawMesh(Mesh mesh, bool threaded = true)
         {
-            lock (EditorViewModel.GetInstance())
-                Parallel.ForEach(mesh.Triangles, t => Fill(t));
-            //lock (EditorViewModel.GetInstance())
-            //{
-            //    foreach (Triangle triangle in mesh.Triangles)
-            //        Fill(triangle);
-            //}
+            if (threaded)
+            {
+                lock (EditorViewModel.GetInstance())
+                    Parallel.ForEach(mesh.Triangles, t => Fill(t));
+            }
+            else
+            {
+                lock (EditorViewModel.GetInstance())
+                {
+                    foreach (Triangle triangle in mesh.Triangles)
+                        Fill(triangle);
+                }
+            }
         }
 
         public void DrawPoint(Vector3 point, Brush brush)
@@ -136,7 +142,7 @@ namespace GK1_MeshEditor
             Vector2 b = new Vector2(verts[1].X, verts[1].Y);
             Vector2 c = new Vector2(verts[2].X, verts[2].Y);
             Vector2 v0 = b - a, v1 = c - a;
-            float invDen = 1 / (v0.X * v1.Y - v1.X * v0.Y);
+            float invDen = 1.0f / (v0.X * v1.Y - v1.X * v0.Y);
 
             for (int scanline = ymin; scanline <= ymax + 1; ++scanline)
             {
@@ -177,7 +183,7 @@ namespace GK1_MeshEditor
                         Vector2 p = new Vector2(j, y);
 
                         Vector3 barCoords = new Vector3(1.0f / 3.0f, 1.0f / 3.0f, 1.0f / 3.0f);
-                        if (Math.Abs(b.X - c.X) > 1e-5 || Math.Abs(b.Y - c.Y) > 1e-5)
+                        if (!float.IsInfinity(invDen))
                             barCoords = Util.CartesianToBaricentricCached(p, a, v0, v1, invDen);
 
                         Vertex iVert = Util.InterpolateVertex(tri, barCoords);
