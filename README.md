@@ -1,6 +1,6 @@
-# Mesh Editor
+# Mesh Renderer
 
-This project is a 3D Mesh Editor developed in C#, featuring a Bezier surface representation, custom rendering pipeline, and support for phong shading, textures and normal mapping. It allows users to manipulate 3D scene, including applying rotation and controlling lighting parameters.
+This project is a 3D Mesh Renderer developed in C#, featuring a Bezier surface representation, custom rendering pipeline, and support for phong shading, textures and normal mapping. It allows users to manipulate 3D scene, including applying rotation and controlling lighting parameters.
 
 ## Features
 
@@ -34,7 +34,7 @@ This project is a 3D Mesh Editor developed in C#, featuring a Bezier surface rep
 1. Clone the repository:
 
    ```
-   git clone https://github.com/F1r3D3v/GK1-MeshEditor.git
+   git clone https://github.com/F1r3D3v/MeshRenderer.git
    ```
 
 2. Open the solution in your IDE.
@@ -48,4 +48,4 @@ This project is a 3D Mesh Editor developed in C#, featuring a Bezier surface rep
 
 1. Ensure the resources folder contains any required assets like control points files for Bezier surfaces.
 
-2. Run the application from your IDE. The editor window will launch, allowing you to interact with 3D scene, adjusting lighting parameters, and applying rotation.
+2. Run the application from your IDE. The renderer window will launch, allowing you to interact with 3D scene, adjusting lighting parameters, and applying rotation.
